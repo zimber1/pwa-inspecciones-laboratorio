@@ -53,7 +53,7 @@
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
 
-  Ejecuté las pruebas y verificaciones del entorno técnico del starter de la Actividad 01 en la rama `feature/felix-evidencias`. Revisé la estructura del proyecto y colaboré en la revisión de la documentación técnica (`docs/requirements.md` y `docs/decision-record.md`). Enlace al archivo modificado: [evidence/individual.md](file:///c:/Users/felix/Downloads/pwa/pwa-inspecciones-laboratorio/evidence/individual.md).
+  Ejecuté las pruebas y verificaciones del entorno técnico del starter de la Actividad 01 en la rama `feature/felix-evidencias`. Revisé la estructura del proyecto y colaboré en la revisión de la documentación técnica (`docs/requirements.md` y `docs/decision-record.md`). Archivo modificado: `evidence/individual.md`.
 
 - Decisión que puedo explicar y por qué:
 
