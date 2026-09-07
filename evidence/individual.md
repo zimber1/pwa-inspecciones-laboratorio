@@ -48,3 +48,55 @@
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
   Utilicé ChatGPT como herramienta de apoyo para analizar las instrucciones de la actividad, organizar la documentación y revisar la redacción de los documentos del proyecto. La IA influyó en la estructura y redacción de `docs/requirements.md`, `docs/decision-record.md` y esta evidencia individual. Las decisiones finales y los resultados técnicos fueron revisados personalmente y se basan en las ejecuciones realizadas en el entorno del proyecto.
+
+## Integrante: Felix Ivan Garcia Flores
+
+- Mi contribución concreta y enlace a archivo, commit anterior o revisión:
+
+  Ejecuté las pruebas y verificaciones del entorno técnico del starter de la Actividad 01 en la rama `feature/felix-evidencias`. Revisé la estructura del proyecto y colaboré en la revisión de la documentación técnica (`docs/requirements.md` y `docs/decision-record.md`). Enlace al archivo modificado: [evidence/individual.md](file:///c:/Users/felix/Downloads/pwa/pwa-inspecciones-laboratorio/evidence/individual.md).
+
+- Decisión que puedo explicar y por qué:
+
+  Justifiqué la selección de PWA sobre aplicaciones nativas o web tradicionales, explicando que PWA permite mantener un único código base en Next.js y evolucionar gradualmente hacia el almacenamiento local y sincronización ante escenarios de conectividad intermitente, reduciendo costos de desarrollo y manteniendo distribución web.
+
+- Comando o prueba proporcionada que ejecuté:
+
+  `node -v`
+
+  `npm -v`
+
+  `npm ci`
+
+  `npm test`
+
+  `npm run build`
+
+  `npm run verify`
+
+- Resultado real que observé:
+
+  `node -v` devolvió la versión `v20.19.5`.
+
+  `npm -v` devolvió la versión `10.8.2`.
+
+  `npm ci` instaló correctamente las dependencias utilizando el `package-lock.json` (`added 28 packages in 34s`).
+
+  `npm test` ejecutó la prueba del starter y reportó `starter.spec.mjs: PASS`.
+
+  `npm run build` realizó la compilación de producción de Next.js de manera exitosa (`✓ Compiled successfully`).
+
+  `npm run verify` ejecutó el flujo completo de prueba y build, mostrando `Verificación técnica: pass` y generando el reporte `reports/verification.json`.
+
+- Qué verifica esa prueba y qué no verifica:
+
+  Verifica la integridad sintáctica de la página inicial del starter, que las dependencias instalen de manera reproducible con el lockfile y que el proyecto compile adecuadamente sin errores de compilación.
+
+  No verifica la funcionalidad offline, service worker, manifest, sincronización en segundo plano, notificaciones, ni criterios de accesibilidad o rendimiento que se abordarán en semanas futuras.
+
+- Limitación, dificultad o riesgo que identifiqué:
+
+  Se identificó la necesidad de asegurar la ejecución bajo Node.js 20.19.5 mediante NVM para mantener reproducibilidad exacta con las restricciones de la actividad, así como asegurar que el ejecutable `next` se invoque a través del entorno de scripts de npm (`node_modules/.bin`) para evitar errores de comandos no encontrados.
+
+- Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
+
+  Utilicé Antigravity como herramienta de apoyo para organizar la ejecución de comandos de verificación en el entorno local, estructurar los resultados observados y redactar de forma clara esta evidencia individual. Las pruebas y resultados técnicos fueron verificados directamente por mí en el sistema.
