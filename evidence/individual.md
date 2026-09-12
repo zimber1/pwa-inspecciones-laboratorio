@@ -101,6 +101,33 @@
 
   Utilicé Antigravity como herramienta de apoyo para organizar la ejecución de comandos de verificación en el entorno local, estructurar los resultados observados y redactar de forma clara esta evidencia individual. Las pruebas y resultados técnicos fueron verificados directamente por mí en el sistema.
 
+### Registro de Evidencia (Martes-Viernes) - Actividad 02
+
+- Commit SHA:
+
+  55c4e54ebea7d7ea3d63c78f5989ce11e524f12b
+
+- Decisión Técnica (Justificación):
+
+  Decidí adaptar la suite de pruebas del manifest al formato nativo `.mjs` (`tests/manifest.spec.mjs`). Esta adaptación fue necesaria para asegurar la compatibilidad con el entorno Node.js 20.19.6 de GitHub Actions, el cual no soporta ejecución nativa de `.ts` ni banderas experimentales como `--experimental-strip-types`, garantizando así que las comprobaciones pasen exitosamente sin alterar la configuración del repositorio.
+
+- Prueba Ejecutada:
+
+  `npm test` y `npm run verify`
+
+- Resultado (Obtenido vs. Esperado):
+
+  Esperado: Que las pruebas validen exitosamente todas las propiedades del PWA manifest (W3C) y logren un `PASS` verde en el flujo automatizado de GitHub Actions.
+  Obtenido: La prueba local aprobó (`manifest.spec.mjs: PASS`) y la validación remota completó el build y los checks técnicos exitosamente (Exit code 0).
+
+- Limitación (Obstáculos / Retos):
+
+  El obstáculo principal fue el quiebre del pipeline en GitHub Actions debido al uso de características de TypeScript no soportadas nativamente por la versión antigua de Node en el servidor. El reto se superó diagnosticando el log de CI y migrando la prueba al formato ESM aceptado por el proyecto original, estabilizando el pipeline.
+
+- Uso de IA (Si corresponde, describir):
+
+  Utilicé el asistente para diagnosticar rápidamente el error del pipeline CI ("bad option: --experimental-strip-types") y para estructurar correctamente los commits bajo el estándar Conventional Commits. Revisé y verifiqué los resultados localmente antes del push final.
+
 ## Integrante: Cesar 3522110305
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
