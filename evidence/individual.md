@@ -84,7 +84,7 @@
 
   Utilicé ChatGPT como herramienta de apoyo para revisar la correspondencia entre los archivos de la Semana 2, analizar la configuración existente y estructurar la documentación de esta evidencia. Los cambios realizados fueron revisados manualmente y validé el resultado ejecutando `npm run build`.
 
-## Integrante: Felix Ivan Garcia Flores
+## Integrante: Felix Ivan Garcia Flores (3523110172)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
 
@@ -136,8 +136,7 @@
 
   Utilicé Antigravity como herramienta de apoyo para organizar la ejecución de comandos de verificación en el entorno local, estructurar los resultados observados y redactar de forma clara esta evidencia individual. Las pruebas y resultados técnicos fueron verificados directamente por mí en el sistema.
 
-## Integrante: Cesar Gaspar Pacheco (3522110305)
-### Registro de Evidencia (Martes-Viernes) - Actividad 02
+### Registro de Evidencia — Actividad 02
 
 - Commit SHA:
 
@@ -164,7 +163,7 @@
 
   Utilicé el asistente para diagnosticar rápidamente el error del pipeline CI ("bad option: --experimental-strip-types") y para estructurar correctamente los commits bajo el estándar Conventional Commits. Revisé y verifiqué los resultados localmente antes del push final.
 
-## Integrante: Cesar 3522110305
+## Integrante: Cesar Gaspar Pacheco (3522110305)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
 
