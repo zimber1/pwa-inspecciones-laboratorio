@@ -101,38 +101,54 @@
 
   Utilicé Antigravity como herramienta de apoyo para organizar la ejecución de comandos de verificación en el entorno local, estructurar los resultados observados y redactar de forma clara esta evidencia individual. Las pruebas y resultados técnicos fueron verificados directamente por mí en el sistema.
 
-## Integrante: Cesar 3522110305
+## Integrante: Cesar Gaspar Pacheco (3522110305)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
 
-  Revisé la evidencia individual solicitada para la actividad y agregué mi sección personal en `evidence/individual.md`. Mi aportación se enfoca en documentar mi verificación del proyecto del equipo y el alcance real de la prueba ejecutada.
+  Implementé el incremento de Semana 2 para el shell instalable de la PWA. Agregué `public/manifest.webmanifest`, iconos locales, el componente `src/components/app-shell.tsx`, la integración desde `src/app/layout.tsx` y `src/app/page.tsx`, la prueba `tests/manifest.spec.ts`, el check público de Semana 2 y la documentación de verificación en `README.md`.
 
 - Decisión que puedo explicar y por qué:
 
-  Puedo explicar la decisión de utilizar una PWA para este proyecto. Esta estrategia es adecuada porque el producto se orienta al registro y consulta de inspecciones de laboratorio, y en etapas futuras deberá considerar situaciones de conectividad intermitente sin cambiar el stack de Next.js indicado para el curso.
+  Separé el shell en `src/components/app-shell.tsx` para que `src/app/page.tsx` solo conecte los datos sintéticos con la interfaz. Esta decisión deja el manifest, la navegación principal y los estados de carga, error y vacío en un componente inspeccionable y más fácil de probar, sin implementar todavía funcionalidades futuras como offline o sincronización.
 
 - Comando o prueba proporcionada que ejecuté:
 
   `npm ci`
 
+  `npm run test -- --run`
+
+  `npm run build`
+
   `npm run verify`
+
+  `bash public-tests/check.sh`
 
 - Resultado real que observé:
 
-  `npm ci` instaló correctamente las dependencias usando el `package-lock.json`.
+  `npm ci` instaló correctamente las dependencias, aunque mostró un aviso porque la terminal local usa Node.js `v20.10.0` y el proyecto declara `>=20.19.0`.
 
-  Al ejecutar la verificación con Node.js `v24.19.0`, `npm run verify` terminó con `Verificación técnica: pass`. La prueba `starter.spec.mjs` mostró `PASS`, el build de Next.js compiló correctamente y se generó `reports/verification.json`.
+  `npm run test -- --run` terminó correctamente y mostró `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
+
+  `npm run build` compiló correctamente el proyecto con Next.js.
+
+  `npm run verify` terminó con `Verificación técnica: pass` y generó `reports/verification.json`.
+
+  `bash public-tests/check.sh` terminó con `PUBLIC_OK`.
 
 - Qué verifica esa prueba y qué no verifica:
 
-  La verificación comprueba que la estructura requerida esté presente, que la prueba proporcionada del starter pase y que el proyecto compile correctamente.
+  La prueba de Semana 2 verifica que el manifest tenga nombre, `short_name`, `start_url`, `scope`, `display`, colores e iconos esperados; también comprueba que `layout.tsx` referencie el manifest, que `page.tsx` use `AppShell` y que el shell contenga navegación principal y estados de carga, error y vacío.
 
-  No comprueba una calificación académica automática, no valida por completo la calidad del análisis de requisitos, no certifica ausencia de secretos y no prueba todavía instalación PWA, funcionamiento offline, sincronización, notificaciones ni autenticación.
+  No verifica instalación real en todos los navegadores, funcionamiento offline, service worker, sincronización, notificaciones, autenticación ni persistencia local. Esas capacidades quedan fuera del alcance de esta semana.
 
 - Limitación, dificultad o riesgo que identifiqué:
 
-  La instalación local tiene Node.js `v20.10.0`, pero la actividad pide Node.js `20.19` o posterior compatible. Con esa versión local, `npm test` y `npm run verify` fallaron por incompatibilidad con `import.meta.dirname`. Por eso la verificación correcta se ejecutó con Node.js `v24.19.0`, que sí es compatible. Además, `npm ci` reportó 2 vulnerabilidades altas en dependencias, sin corregirlas porque cambiar dependencias queda fuera del alcance de esta evidencia individual.
+  `make verify` no se pudo ejecutar porque `make` no está instalado en esta máquina; ejecuté el equivalente exacto `npm run verify`, que es el comando llamado por el Makefile. También identifiqué que `npm ci` reporta vulnerabilidades de dependencias transitivas y no apliqué `npm audit fix --force` porque podría cambiar versiones fuera del alcance de la actividad.
+
+- Commit SHA evaluado:
+
+  El SHA final se fija al cerrar la entrega con `git rev-parse HEAD` y se reporta fuera de este archivo para no modificar el mismo commit que se está identificando.
 
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
-  Utilicé ChatGPT/Codex como apoyo para interpretar el enunciado, identificar qué faltaba en mi evidencia individual, ejecutar los comandos de verificación y redactar esta sección. La IA influyó en la organización y redacción de mi evidencia, pero revisé que el texto correspondiera a los comandos ejecutados y al alcance solicitado por la actividad.
+  Utilicé ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Validé manualmente los archivos modificados y ejecuté los comandos de prueba, build, verificación y check público antes de preparar la entrega.
