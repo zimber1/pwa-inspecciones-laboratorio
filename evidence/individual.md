@@ -52,8 +52,7 @@
 ### Registro de Evidencia — Actividad 02
 
 - Commit SHA:
-
-  Se fijará al realizar el commit de esta contribución mediante `git rev-parse HEAD`.
+    `92a3b7d024b75fdd6a794df025c94ce58ea930ae`
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
 
