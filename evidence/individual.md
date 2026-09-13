@@ -49,6 +49,42 @@
 
   Utilicé ChatGPT como herramienta de apoyo para analizar las instrucciones de la actividad, organizar la documentación y revisar la redacción de los documentos del proyecto. La IA influyó en la estructura y redacción de `docs/requirements.md`, `docs/decision-record.md` y esta evidencia individual. Las decisiones finales y los resultados técnicos fueron revisados personalmente y se basan en las ejecuciones realizadas en el entorno del proyecto.
 
+### Registro de Evidencia — Actividad 02
+
+- Commit SHA:
+
+  Se fijará al realizar el commit de esta contribución mediante `git rev-parse HEAD`.
+
+- Mi contribución concreta y enlace a archivo, commit anterior o revisión:
+
+  Actualicé `src/app/layout.tsx` para alinear la configuración de iconos de Next.js con los recursos PNG disponibles en `public/icons/` y con los iconos declarados por el manifest de la Semana 2. También actualicé `README.md` para documentar correctamente el entorno requerido, los artefactos de la semana y la decisión de utilizar iconos PNG locales.
+
+- Decisión técnica y justificación:
+
+  Actualicé la configuración de iconos de `layout.tsx` para que coincidiera con los archivos PNG disponibles en `public/icons/` y con los recursos declarados por el manifest. Esta decisión evita referencias inconsistentes entre la configuración de Next.js y los recursos reales del proyecto. También actualicé `README.md` para mantener documentados los artefactos y decisiones correspondientes a la Semana 2.
+
+- Prueba ejecutada:
+
+  `npm run build`
+
+- Resultado real:
+
+  La compilación de producción de Next.js terminó correctamente. Se obtuvo `Compiled successfully`, se completó la validación de tipos y se generaron las páginas estáticas sin errores.
+
+- Qué verifica y qué no verifica:
+
+  `npm run build` verifica que los cambios realizados en `layout.tsx` y la configuración actual del proyecto sean válidos para la compilación de producción de Next.js.
+
+  Esta prueba no verifica por sí sola la instalación real de la PWA, el funcionamiento offline, la sincronización, la persistencia local ni todas las funcionalidades del producto.
+
+- Limitación o dificultad identificada:
+
+  Durante la revisión se identificó una inconsistencia entre los iconos referenciados originalmente desde `layout.tsx` y los recursos PNG utilizados actualmente por el manifest. Se corrigió la referencia para mantener coherencia entre los metadatos de la aplicación y los archivos disponibles en el repositorio.
+
+- Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
+
+  Utilicé ChatGPT como herramienta de apoyo para revisar la correspondencia entre los archivos de la Semana 2, analizar la configuración existente y estructurar la documentación de esta evidencia. Los cambios realizados fueron revisados manualmente y validé el resultado ejecutando `npm run build`.
+
 ## Integrante: Felix Ivan Garcia Flores
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:

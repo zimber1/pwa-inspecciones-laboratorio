@@ -4,11 +4,12 @@ Proyecto integrador para una PWA de inspecciones y mantenimiento de laboratorios
 
 ## Entorno
 
+
 - Node.js `>=20.19.0`
 - npm `>=10.0.0`
 - Git
 
-En esta maquina se observo Node.js `v20.10.0` y npm `10.2.3`. Los scripts se dejaron compatibles con esa version local, pero el requisito declarado del curso sigue siendo Node.js `20.19` o posterior compatible.
+La versión de Node.js debe ser compatible con el entorno definido por el curso. La verificación de la semana se ejecuta mediante los scripts del proyecto y GitHub Actions.
 
 ## Setup
 
@@ -44,8 +45,9 @@ La prueba `tests/manifest.spec.ts` valida comportamiento critico de esta semana:
 Artefactos agregados o actualizados:
 
 - `public/manifest.webmanifest`
-- `public/icons/icon-192.svg`
-- `public/icons/icon-512.svg`
+- `public/icons/icon-192x192.png`
+- `public/icons/icon-512x512.png`
+- `public/icons/icon-maskable-512x512.png`
 - `src/app/layout.tsx`
 - `src/app/page.tsx`
 - `src/components/app-shell.tsx`
@@ -58,7 +60,7 @@ Artefactos agregados o actualizados:
 
 La decision principal fue separar el shell en `src/components/app-shell.tsx` para que `src/app/page.tsx` solo conecte datos sinteticos con la interfaz. Esto permite probar el manifest y los estados sin mezclar la pagina de Next.js con todo el marcado de presentacion.
 
-El manifest usa `display: "standalone"`, `start_url: "/"` y `scope: "/"` porque esta entrega solo cubre instalacion progresiva del shell. Los iconos se entregan como SVG locales para evitar depender de servicios externos o archivos generados fuera del repositorio.
+El manifest usa `display: "standalone"`, `start_url: "/"` y `scope: "/"` porque esta entrega solo cubre instalacion progresiva del shell. Los iconos se entregan como archivos PNG locales para que el manifest y la configuración de la aplicación utilicen recursos disponibles dentro del repositorio, sin depender de servicios externos.
 
 ## Limites conocidos
 
