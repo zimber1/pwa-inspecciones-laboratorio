@@ -1,18 +1,17 @@
 {
-  "name": "Inspecciones de laboratorio",
+  "name": "Inspecciones de laboratorio UTT",
   "short_name": "Inspecciones",
-  "description": "Aplicación web para el registro, consulta y seguimiento de inspecciones de mantenimiento de laboratorios.",
-  "start_url": "/",
-  "scope": "/",
-  "id": "/",
-  "display": "standalone",
-  "orientation": "portrait-primary",
+  "description": "Shell instalable para registrar y consultar inspecciones sintéticas de mantenimiento de laboratorios.",
   "lang": "es-MX",
   "dir": "ltr",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f6f8fb",
+  "theme_color": "#1f6f5b",
   "categories": [
-    "business",
+    "education",
     "productivity"
   ],
   "icons": [

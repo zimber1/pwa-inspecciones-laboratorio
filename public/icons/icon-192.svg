@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-label="Inspecciones de laboratorio">
+  <rect width="192" height="192" rx="32" fill="#1f6f5b"/>
+  <rect x="42" y="38" width="108" height="116" rx="14" fill="#ffffff"/>
+  <path d="M64 70h64M64 96h64M64 122h34" stroke="#1f6f5b" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="132" cy="124" r="18" fill="#f5b84b"/>
+  <path d="m124 124 6 6 14-17" fill="none" stroke="#172033" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
