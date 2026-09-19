@@ -167,7 +167,7 @@
 
 - Commit SHA:
 
-  [Pendiente - Se actualizará con el hash final]
+  8f43241254e0591e9edc8a68dfe90a1a145fc638
 
 - Decisión Técnica (Justificación):
 
