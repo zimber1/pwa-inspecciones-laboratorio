@@ -214,3 +214,39 @@
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
   Utilicé ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Validé manualmente los archivos modificados y ejecuté los comandos de prueba, build, verificación y check público antes de preparar la entrega.
+
+## Semana 03 - Cesar Gaspar Pacheco (3522110305)
+
+- Mi contribución concreta y enlace a archivo, commit anterior o revisión:
+
+  Implementé mi parte individual de la Semana 03. Creé `src/lib/pwa/register-service-worker.ts`, integré su llamada desde `src/components/app-shell.tsx`, revisé la duplicidad entre `src/app/manifest.ts` y `public/manifest.webmanifest`, y agregué `tests/register-service-worker.spec.ts` para comprobar el comportamiento del registro sin depender del navegador real.
+
+- Commit SHA evaluado:
+
+  El SHA final se obtiene después del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escribo aquí como valor fijo porque modificar este archivo cambiaría el hash del commit.
+
+- Decisión técnica que puedo explicar:
+
+  Conservé `public/manifest.webmanifest` como manifest activo y eliminé `src/app/manifest.ts`. Lo hice porque `layout.tsx` ya enlaza explícitamente `/manifest.webmanifest` y porque, al probar la aplicación con ambos archivos, Next.js devolvió error 500 por conflicto entre el archivo público y la ruta especial generada por `src/app/manifest.ts`. Después de eliminar la ruta duplicada, `curl http://localhost:3000/manifest.webmanifest` respondió `200 application/manifest+json` con el manifest público.
+
+- Prueba que ejecuté y resultado:
+
+  `npm run test -- --run` terminó correctamente con `starter.spec.mjs: PASS`, `manifest.spec.ts: PASS` y `register-service-worker.spec.ts: PASS`.
+
+  `npm run build` compiló correctamente la aplicación con Next.js.
+
+  `npm run verify` terminó con `Verificación técnica: pass` y generó `reports/verification.json`.
+
+  También comprobé manualmente `http://localhost:3000/manifest.webmanifest` y respondió `200 application/manifest+json`.
+
+- Limitación o fallo diagnosticado:
+
+  `public/sw.js`, `docs/cache-strategy.md`, `tests/service-worker.spec.ts` y `tests/offline.spec.ts` corresponden a otros integrantes según mi tarjeta de actividad. Por eso mi cambio registra `/sw.js` de forma segura y maneja el fallo si el archivo aún no existe, pero no implementa el contenido del service worker ni la estrategia completa de caché offline.
+
+- Cambio que podría defender o modificar en vivo:
+
+  Puedo explicar el guardado del registro del service worker: solo se ejecuta en navegador, requiere soporte de `navigator.serviceWorker`, evita contextos inseguros fuera de localhost/HTTPS y registra errores con `console.warn` sin bloquear la carga de la aplicación.
+
+- Uso declarado de IA (herramienta, propósito, validación):
+
+  Utilicé ChatGPT/Codex para interpretar el kit de Semana 03, contrastarlo con mi tarjeta individual, revisar el conflicto real de manifests, redactar el registro del service worker y preparar pruebas. Validé personalmente los archivos modificados y ejecuté las pruebas, build, verificación y comprobación manual del manifest antes de entregar.
