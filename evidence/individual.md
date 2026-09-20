@@ -163,6 +163,37 @@
 
   Utilicé el asistente para diagnosticar rápidamente el error del pipeline CI ("bad option: --experimental-strip-types") y para estructurar correctamente los commits bajo el estándar Conventional Commits. Revisé y verifiqué los resultados localmente antes del push final.
 
+### Registro de Evidencia — Actividad 03 (Semana 3)
+
+- Commit SHA:
+
+  8f43241254e0591e9edc8a68dfe90a1a145fc638
+
+- Decisión Técnica (Justificación):
+
+  Decidí implementar una estrategia de Network First para la navegación HTML para asegurar que los usuarios siempre tengan la versión más reciente de la aplicación cuando haya red, cayendo a un fallback offline si falla. Para los recursos estáticos (App Shell, CSS, JS), elegí Cache First, priorizando la velocidad y el ahorro de ancho de banda. Todo esto quedó documentado con diagramas de Mermaid en `docs/cache-strategy.md`.
+
+- Prueba Ejecutada:
+
+  Verificación manual del registro e intercepción a través de Chrome DevTools (Application > Service Workers y Cache Storage). Simulación de conectividad "Offline" en la pestaña Network y recarga de página para observar el comportamiento de fallback.
+
+- Resultado (Obtenido vs. Esperado):
+
+  Esperado: El Service Worker se instala, cachea los recursos estáticos definidos y, al desactivar la red, la aplicación continúa mostrando la interfaz (App Shell) o una respuesta fallback sin colgar el navegador con el error predeterminado.
+  Obtenido: La caché estática se pobló correctamente en el evento de instalación y la intercepción de peticiones estáticas entregó recursos locales (Status 200 via Service Worker).
+
+- Limitación (Obstáculos / Retos):
+
+  La principal limitación fue gestionar el ciclo de vida del Service Worker (evitar el estado "waiting" usando `self.skipWaiting()` y `self.clients.claim()`) para asegurar que la nueva estrategia de caché entrara en vigor inmediatamente sin que el usuario tuviera que cerrar todas las pestañas. 
+
+- Cambio que puede explicar o modificar:
+
+  Podría modificar y mejorar el manejo de la caché estática, por ejemplo, implementando un mecanismo de versionado más dinámico (como añadir un hash al nombre de los archivos cacheables) para evitar problemas si cambian los recursos estáticos pero no se actualiza la versión `pwa-static-v1`.
+
+- Uso de IA (Si corresponde, describir):
+
+  Utilicé Antigravity (Gemini) como asistente de programación por pares (pair programming) para estructurar el núcleo del `sw.js` (incluyendo los eventos install, activate y fetch), redactar el documento técnico `docs/cache-strategy.md` con la sintaxis de diagramas Mermaid, y formular de forma clara la presente evidencia técnica bajo el formato requerido. Se realizaron commits atómicos locales revisados en conjunto.
+
 ## Integrante: Cesar Gaspar Pacheco (3522110305)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
