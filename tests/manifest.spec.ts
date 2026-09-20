@@ -26,6 +26,12 @@ const manifest = JSON.parse(
   }>;
 };
 
+assert.equal(
+  existsSync(resolve(root, "src/app/manifest.ts")),
+  false,
+  "No debe existir src/app/manifest.ts porque compite con public/manifest.webmanifest"
+);
+
 assert.equal(manifest.name, "Inspecciones de laboratorio UTT");
 assert.equal(manifest.short_name, "Inspecciones");
 assert.equal(manifest.start_url, "/");

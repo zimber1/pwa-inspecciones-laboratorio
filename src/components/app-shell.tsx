@@ -1,4 +1,8 @@
+"use client";
+
+import { useEffect } from "react";
 import type { Inspection } from "@/lib/data/inspections";
+import { registerServiceWorker } from "@/lib/pwa/register-service-worker";
 
 type AppShellStatus = "ready" | "loading" | "error";
 
@@ -9,6 +13,10 @@ type AppShellProps = {
 
 export function AppShell({ inspections, status = "ready" }: AppShellProps) {
   const hasInspections = inspections.length > 0;
+
+  useEffect(() => {
+    void registerServiceWorker();
+  }, []);
 
   return (
     <div className="app-shell">
