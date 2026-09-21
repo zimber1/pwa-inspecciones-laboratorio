@@ -84,6 +84,36 @@
 
   Utilicé ChatGPT como herramienta de apoyo para revisar la correspondencia entre los archivos de la Semana 2, analizar la configuración existente y estructurar la documentación de esta evidencia. Los cambios realizados fueron revisados manualmente y validé el resultado ejecutando `npm run build`.
 
+  ### Registro de Evidencia — Actividad 03 (Semana 3)
+
+- **Rama de trabajo:** `feature/PWA-03-Claudia`
+
+- **Commit SHA:** 75b87b71dd5387fcac08f36fd69d16f58b8a6170
+
+- **Contribución:** 
+Implementé `tests/service-worker.spec.ts` y `tests/offline.spec.ts` para validar el ciclo de vida del Service Worker, las cachés `pwa-static-v1` y `pwa-dynamic-v1`, el App Shell, peticiones GET, las estrategias `Network First` y `Cache First` y el fallback HTTP `503`. También actualicé `README.md` con la documentación técnica de la Semana 3 y realicé la verificación de integración.
+
+- **Decisión técnica:** 
+Utilicé pruebas automatizadas basadas en aserciones sobre `public/sw.js` para validar comportamientos críticos de forma reproducible y detectar regresiones sin depender únicamente de pruebas manuales.
+- **Pruebas ejecutadas:** 
+`npm test`, 
+`npm run build`, 
+`npx tsx tests/service-worker.spec.ts` 
+ `npx tsx tests/offline.spec.ts`.
+
+- **Resultado:** 
+La suite completa terminó correctamente: `starter.spec.mjs`, `manifest.spec.ts`, `register-service-worker.spec.ts`, `service-worker.spec.ts` y `offline.spec.ts` en `PASS`. El build de Next.js también finalizó correctamente.
+
+- **Aporte técnico:** 
+Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y fallback controlado. Esto permite verificar automáticamente parte del comportamiento crítico implementado durante la Semana 3.
+
+- **Limitación:**
+ Las pruebas no sustituyen la validación en navegadores y dispositivos reales bajo diferentes condiciones de conectividad. Si un recurso no está disponible en caché y no existe conexión, el Service Worker devuelve HTTP `503`.
+
+- **Cambio que puedo defender:** Puedo explicar y modificar las pruebas relacionadas con `install`, `activate` y `fetch`, `Cache Storage`, `Network First`, `Cache First` y el fallback `503`.
+
+- **Uso de IA:** Utilicé ChatGPT como apoyo para interpretar los requerimientos, estructurar las pruebas y revisar la documentación. Revisé los cambios y validé personalmente la implementación mediante las pruebas y el build.
+
 ## Integrante: Felix Ivan Garcia Flores (3523110172)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
