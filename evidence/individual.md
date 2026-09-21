@@ -88,7 +88,7 @@
 
 - **Rama de trabajo:** `feature/PWA-03-Claudia`
 
-- **Commit SHA:** Se agregará después del commit final con `git rev-parse HEAD`.
+- **Commit SHA:** 75b87b71dd5387fcac08f36fd69d16f58b8a6170
 
 - **Contribución:** 
 Implementé `tests/service-worker.spec.ts` y `tests/offline.spec.ts` para validar el ciclo de vida del Service Worker, las cachés `pwa-static-v1` y `pwa-dynamic-v1`, el App Shell, peticiones GET, las estrategias `Network First` y `Cache First` y el fallback HTTP `503`. También actualicé `README.md` con la documentación técnica de la Semana 3 y realicé la verificación de integración.
