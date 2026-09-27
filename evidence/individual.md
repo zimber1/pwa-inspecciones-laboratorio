@@ -338,3 +338,44 @@ Las pruebas cubren ciclo de vida, estrategias de cach√©, recuperaci√≥n offline y
 - Uso declarado de IA:
 
   Utilice Antigravity (modelo Gemini) como asistente para generar la estructura inicial de los componentes page.tsx, loading.tsx y not-found.tsx, y para la redaccion de este formato de evidencia asegurando el cumplimiento de la rubrica de evaluacion, validando los resultados mediante revision de codigo en conjunto.
+
+
+- Uso de IA: herramienta, prop+¶sito, partes influenciadas y validaci+¶n propia:
+
+  Utilic+¨ ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+¨ manualmente los archivos modificados y ejecut+¨ los comandos de prueba, build, verificaci+¶n y check p+¶blico antes de preparar la entrega.
+
+## Semana 04 - Cesar Gaspar Pacheco (3522110305)
+
+- Mi contribuci+¶n concreta:
+
+  Implement+¨ mi parte individual de la Semana 04 en `src/app/inspecciones/page.tsx`: la ruta `/inspecciones` usa CSR, carga datos sint+¨ticos desde el navegador, muestra listado verificable y contempla estados de carga, contenido y error.
+
+- Commit SHA evaluado:
+
+  El SHA final se obtiene despu+¨s del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escribo aqu+° como valor fijo porque modificar este archivo cambiar+°a el hash del commit.
+
+- Decisi+¶n t+¨cnica que puedo explicar:
+
+  Us+¨ CSR para el listado porque esta pantalla necesita interacci+¶n inmediata del navegador: refrescar datos, filtrar inspecciones con hallazgos y simular un fallo controlado. Dej+¨ la carga de datos dentro de `useEffect` y `useState`, de modo que el HTML inicial muestra el estado de carga y el listado se completa despu+¨s en cliente.
+
+- Prueba que ejecut+¨ y resultado:
+
+  `npm test` termin+¶ correctamente con `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
+
+  `npm run build` compil+¶ correctamente e incluy+¶ la ruta `/inspecciones`.
+
+  `npm run verify` termin+¶ con `Verificaci+¶n t+¨cnica: pass` y gener+¶ `reports/verification.json`.
+
+  Tambi+¨n comprob+¨ manualmente `http://localhost:3000/inspecciones`: el HTML inicial contiene `Cargando listado CSR`, contiene el bot+¶n `Refrescar datos` y no contiene `Laboratorio de Redes`, lo que confirma que la lista no llega prerenderizada como SSR.
+
+- Limitaci+¶n o fallo diagnosticado:
+
+  Mi tarjeta individual solo cubre la ruta CSR del listado. No implement+¨ `src/app/inspecciones/[id]/page.tsx`, `src/components/loading-state.tsx`, `docs/rendering-decision.md` ni `tests/rendering.spec.ts`, porque esos entregables corresponden al trabajo de otros integrantes o a la integraci+¶n del equipo.
+
+- Cambio que podr+°a defender o modificar en vivo:
+
+  Puedo explicar c+¶mo se demuestran los tres estados: `loading` aparece antes de cargar los datos, `ready` muestra las inspecciones sint+¨ticas y `error` se activa con el bot+¶n `Simular error` sin romper la ruta.
+
+- Uso declarado de IA (herramienta, prop+¶sito, validaci+¶n):
+
+  Utilic+¨ ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+¨ manualmente el comportamiento de la ruta y ejecut+¨ pruebas, build y verificaci+¶n antes de preparar el commit.
