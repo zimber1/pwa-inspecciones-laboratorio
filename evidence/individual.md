@@ -214,3 +214,39 @@
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
   Utilicé ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Validé manualmente los archivos modificados y ejecuté los comandos de prueba, build, verificación y check público antes de preparar la entrega.
+
+## Semana 04 - Cesar Gaspar Pacheco (3522110305)
+
+- Mi contribución concreta:
+
+  Implementé mi parte individual de la Semana 04 en `src/app/inspecciones/page.tsx`: la ruta `/inspecciones` usa CSR, carga datos sintéticos desde el navegador, muestra listado verificable y contempla estados de carga, contenido y error.
+
+- Commit SHA evaluado:
+
+  El SHA final se obtiene después del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escribo aquí como valor fijo porque modificar este archivo cambiaría el hash del commit.
+
+- Decisión técnica que puedo explicar:
+
+  Usé CSR para el listado porque esta pantalla necesita interacción inmediata del navegador: refrescar datos, filtrar inspecciones con hallazgos y simular un fallo controlado. Dejé la carga de datos dentro de `useEffect` y `useState`, de modo que el HTML inicial muestra el estado de carga y el listado se completa después en cliente.
+
+- Prueba que ejecuté y resultado:
+
+  `npm test` terminó correctamente con `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
+
+  `npm run build` compiló correctamente e incluyó la ruta `/inspecciones`.
+
+  `npm run verify` terminó con `Verificación técnica: pass` y generó `reports/verification.json`.
+
+  También comprobé manualmente `http://localhost:3000/inspecciones`: el HTML inicial contiene `Cargando listado CSR`, contiene el botón `Refrescar datos` y no contiene `Laboratorio de Redes`, lo que confirma que la lista no llega prerenderizada como SSR.
+
+- Limitación o fallo diagnosticado:
+
+  Mi tarjeta individual solo cubre la ruta CSR del listado. No implementé `src/app/inspecciones/[id]/page.tsx`, `src/components/loading-state.tsx`, `docs/rendering-decision.md` ni `tests/rendering.spec.ts`, porque esos entregables corresponden al trabajo de otros integrantes o a la integración del equipo.
+
+- Cambio que podría defender o modificar en vivo:
+
+  Puedo explicar cómo se demuestran los tres estados: `loading` aparece antes de cargar los datos, `ready` muestra las inspecciones sintéticas y `error` se activa con el botón `Simular error` sin romper la ruta.
+
+- Uso declarado de IA (herramienta, propósito, validación):
+
+  Utilicé ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Validé manualmente el comportamiento de la ruta y ejecuté pruebas, build y verificación antes de preparar el commit.
