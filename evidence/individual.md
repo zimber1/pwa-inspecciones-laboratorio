@@ -311,3 +311,30 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 - Uso declarado de IA (herramienta, propósito, validación):
 
   Utilicé ChatGPT/Codex para interpretar el kit de Semana 03, contrastarlo con mi tarjeta individual, revisar el conflicto real de manifests, redactar el registro del service worker y preparar pruebas. Validé personalmente los archivos modificados y ejecuté las pruebas, build, verificación y comprobación manual del manifest antes de entregar.
+
+
+## Semana 04 - Felix (Ruta SSR: Detalle de Inspeccion)
+
+- Mi contribucion concreta y enlace a archivo, commit anterior o revision:
+
+  Implemente la ruta dinamica SSR para el detalle de inspecciones en src/app/inspecciones/[id]/page.tsx, trabajando con datos sinteticos y manejando los estados de carga con src/app/inspecciones/[id]/loading.tsx y src/components/loading-state.tsx, asi como el estado de error con src/app/inspecciones/[id]/not-found.tsx.
+
+- Commit SHA evaluado:
+
+  SHA del commit principal de mi implementacion SSR: 783099b. (El SHA final exacto se reportara al enviar la entrega, usando git rev-parse HEAD).
+
+- Decision tecnica que puedo explicar:
+
+  Utilice Server-Side Rendering (SSR) de Next.js (Componentes de Servidor asincronos). AÃ±adi un retraso artificial de 1500ms mediante una Promesa para poder comprobar visualmente el estado de carga y validar que el archivo loading.tsx funciona. Maneje los identificadores inexistentes utilizando notFound() de next/navigation, lo cual delega automaticamente la UI a not-found.tsx.
+
+- Prueba que ejecute y resultado:
+
+  Verificacion del renderizado en entorno de desarrollo. Navegue a /inspecciones/INS-001 y /inspecciones/INS-002, comprobando la aparicion del componente de carga y posterior renderizado exitoso de los detalles (Laboratorio, Estado, Fecha, Inspector, etc.). Al ingresar a /inspecciones/INVALID, comprobe que la UI muestra la pantalla de "Inspeccion no encontrada".
+
+- Limitacion o fallo diagnosticado:
+
+  La principal limitacion es que la data es 100% sintetica y en memoria (mock data). Si la base de datos creciera significativamente, no habria paginacion y al ser SSR, cada peticion realiza un "fetching" (simulado) que retiene el servidor. Todavia no estamos usando pre-renderizado (SSG) ni validaciones con un backend real.
+
+- Uso declarado de IA:
+
+  Utilice Antigravity (modelo Gemini) como asistente para generar la estructura inicial de los componentes page.tsx, loading.tsx y not-found.tsx, y para la redaccion de este formato de evidencia asegurando el cumplimiento de la rubrica de evaluacion, validando los resultados mediante revision de codigo en conjunto.
