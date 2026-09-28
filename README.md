@@ -476,7 +476,7 @@ src/lib/data/inspections.ts
 
 mientras que el detalle SSR utiliza datos sintéticos definidos directamente en su ruta.
 
-Por lo tanto, las dos rutas permiten demostrar las estrategias CSR y SSR, pero todavía no utilizan una única fuente de datos real.
+Por lo tanto, las dos rutas permiten demostrar las estrategias CSR y SSR, pero todavía no utilizan una única fuente de datos compartida.
 
 Las pruebas automatizadas de renderizado verifican el contrato estructural de los archivos y no sustituyen las pruebas reales en navegador, dispositivo o condiciones de red.
 
