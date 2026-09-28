@@ -114,6 +114,79 @@ Las pruebas cubren ciclo de vida, estrategias de cachÃ©, recuperaciÃ³n offline y
 
 - **Uso de IA:** UtilicÃ© ChatGPT como apoyo para interpretar los requerimientos, estructurar las pruebas y revisar la documentaciÃ³n. RevisÃ© los cambios y validÃ© personalmente la implementaciÃ³n mediante las pruebas y el build.
 
+## Semana 04 - Claudia Espindola Lopez (Integracion y pruebas)
+
+- Mi contribucion concreta:
+
+  Implemente la prueba automatizada `tests/rendering.spec.ts` para verificar de forma determinista las rutas CSR y SSR de la Semana 04. Tambien integre la prueba al script `npm test`.
+
+  Prepare `docs/rendering-decision.md` para documentar la comparacion tecnica entre CSR y SSR, incluyendo contexto, alternativas, decision, consecuencias, limitaciones y validacion.
+
+  Actualice `README.md` para documentar las rutas de Semana 04, los estados de carga y error, las pruebas de renderizado, las limitaciones y los resultados verificados.
+
+  Tambien realice la integracion y revision final de los cambios de Semana 04 antes de la verificacion del proyecto.
+
+- Commit SHA evaluado:
+
+  El SHA final se obtiene despues del commit de cierre con `git rev-parse HEAD` y se reporta en la entrega. No se fija aqui como valor definitivo porque modificar esta evidencia cambiaria el hash del commit que se esta identificando.
+
+- Decision tecnica que puedo explicar:
+
+  Utilice pruebas automatizadas basadas en aserciones sobre los archivos de las rutas CSR y SSR para comprobar de forma reproducible que cada estrategia mantiene los elementos tecnicos esperados.
+
+  Para CSR se verifica el uso de `"use client"`, `useEffect`, `useState`, los datos sinteticos y los estados `loading`, `ready` y `error`.
+
+  Para SSR se verifica que la ruta no utilice `"use client"`, que implemente un componente asincrono, que utilice `params.id` y que maneje identificadores inexistentes mediante `notFound()`.
+
+  La documentacion de `docs/rendering-decision.md` registra la razon tecnica para mantener CSR en el listado `/inspecciones` y SSR en el detalle `/inspecciones/[id]`.
+
+- Prueba que ejecute y resultado:
+
+  `npx tsx tests/rendering.spec.ts`
+
+  Resultado:
+
+  `rendering.spec.ts: PASS`
+
+  Tambien ejecute:
+
+  `npm test`
+
+  Resultado:
+
+  `starter.spec.mjs: PASS`
+  `manifest.spec.ts: PASS`
+  `register-service-worker.spec.ts: PASS`
+  `service-worker.spec.ts: PASS`
+  `offline.spec.ts: PASS`
+  `rendering.spec.ts: PASS`
+
+- Que verifica y que no verifica:
+
+  `tests/rendering.spec.ts` verifica la existencia de las rutas, la configuracion CSR y SSR, los estados de carga y error, el uso de datos sinteticos, `params.id`, `notFound()` y los componentes asociados a los estados de carga y recurso no encontrado.
+
+  La prueba es una validacion estructural y determinista de los archivos del proyecto. No sustituye una prueba real en navegador, dispositivo, red o comportamiento visual de la aplicacion.
+
+- Limitacion o fallo diagnosticado:
+
+  Las rutas CSR y SSR utilizan modelos de datos sinteticos diferentes. El listado utiliza `src/lib/data/inspections.ts`, mientras que el detalle mantiene sus datos sinteticos dentro de `src/app/inspecciones/[id]/page.tsx`.
+
+  Por lo tanto, la implementacion demuestra las estrategias de renderizado de la Semana 04, pero todavia no utiliza una unica fuente de datos compartida ni un backend real.
+
+  Otra limitacion es que la prueba automatizada no sustituye la validacion manual en navegador bajo diferentes condiciones de red.
+
+- Cambio que podria defender o modificar en vivo:
+
+  Puedo explicar la diferencia entre CSR y SSR en las rutas implementadas, el flujo de estados de carga y error, el uso de `useEffect` y `useState` en CSR, el uso de componentes de servidor en SSR y el manejo de rutas inexistentes mediante `notFound()`.
+
+  Tambien puedo explicar como `tests/rendering.spec.ts` comprueba estos contratos tecnicos y como fue integrado al comando general `npm test`.
+
+- Uso declarado de IA (herramienta, proposito, validacion):
+
+  Utilice ChatGPT como herramienta de apoyo para interpretar los requerimientos de la Semana 04, revisar la implementacion existente, estructurar `tests/rendering.spec.ts`, organizar `docs/rendering-decision.md` y actualizar la documentacion del `README.md`.
+
+  Revise manualmente los cambios realizados y valide la implementacion ejecutando las pruebas correspondientes y la suite general del proyecto. Los resultados registrados en esta evidencia corresponden a ejecuciones realizadas en el entorno local del proyecto.
+
 ## Integrante: Felix Ivan Garcia Flores (3523110172)
 
 - Mi contribuciÃ³n concreta y enlace a archivo, commit anterior o revisiÃ³n:
@@ -340,42 +413,42 @@ Las pruebas cubren ciclo de vida, estrategias de cachÃ©, recuperaciÃ³n offline y
   Utilice Antigravity (modelo Gemini) como asistente para generar la estructura inicial de los componentes page.tsx, loading.tsx y not-found.tsx, y para la redaccion de este formato de evidencia asegurando el cumplimiento de la rubrica de evaluacion, validando los resultados mediante revision de codigo en conjunto.
 
 
-- Uso de IA: herramienta, prop+¦sito, partes influenciadas y validaci+¦n propia:
+- Uso de IA: herramienta, prop+ï¿½sito, partes influenciadas y validaci+ï¿½n propia:
 
-  Utilic+¬ ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+¬ manualmente los archivos modificados y ejecut+¬ los comandos de prueba, build, verificaci+¦n y check p+¦blico antes de preparar la entrega.
+  Utilic+ï¿½ ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+ï¿½ manualmente los archivos modificados y ejecut+ï¿½ los comandos de prueba, build, verificaci+ï¿½n y check p+ï¿½blico antes de preparar la entrega.
 
 ## Semana 04 - Cesar Gaspar Pacheco (3522110305)
 
-- Mi contribuci+¦n concreta:
+- Mi contribuci+ï¿½n concreta:
 
-  Implement+¬ mi parte individual de la Semana 04 en `src/app/inspecciones/page.tsx`: la ruta `/inspecciones` usa CSR, carga datos sint+¬ticos desde el navegador, muestra listado verificable y contempla estados de carga, contenido y error.
+  Implement+ï¿½ mi parte individual de la Semana 04 en `src/app/inspecciones/page.tsx`: la ruta `/inspecciones` usa CSR, carga datos sint+ï¿½ticos desde el navegador, muestra listado verificable y contempla estados de carga, contenido y error.
 
 - Commit SHA evaluado:
 
-  El SHA final se obtiene despu+¬s del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escribo aqu+¡ como valor fijo porque modificar este archivo cambiar+¡a el hash del commit.
+  El SHA final se obtiene despu+ï¿½s del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escribo aqu+ï¿½ como valor fijo porque modificar este archivo cambiar+ï¿½a el hash del commit.
 
-- Decisi+¦n t+¬cnica que puedo explicar:
+- Decisi+ï¿½n t+ï¿½cnica que puedo explicar:
 
-  Us+¬ CSR para el listado porque esta pantalla necesita interacci+¦n inmediata del navegador: refrescar datos, filtrar inspecciones con hallazgos y simular un fallo controlado. Dej+¬ la carga de datos dentro de `useEffect` y `useState`, de modo que el HTML inicial muestra el estado de carga y el listado se completa despu+¬s en cliente.
+  Us+ï¿½ CSR para el listado porque esta pantalla necesita interacci+ï¿½n inmediata del navegador: refrescar datos, filtrar inspecciones con hallazgos y simular un fallo controlado. Dej+ï¿½ la carga de datos dentro de `useEffect` y `useState`, de modo que el HTML inicial muestra el estado de carga y el listado se completa despu+ï¿½s en cliente.
 
-- Prueba que ejecut+¬ y resultado:
+- Prueba que ejecut+ï¿½ y resultado:
 
-  `npm test` termin+¦ correctamente con `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
+  `npm test` termin+ï¿½ correctamente con `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
 
-  `npm run build` compil+¦ correctamente e incluy+¦ la ruta `/inspecciones`.
+  `npm run build` compil+ï¿½ correctamente e incluy+ï¿½ la ruta `/inspecciones`.
 
-  `npm run verify` termin+¦ con `Verificaci+¦n t+¬cnica: pass` y gener+¦ `reports/verification.json`.
+  `npm run verify` termin+ï¿½ con `Verificaci+ï¿½n t+ï¿½cnica: pass` y gener+ï¿½ `reports/verification.json`.
 
-  Tambi+¬n comprob+¬ manualmente `http://localhost:3000/inspecciones`: el HTML inicial contiene `Cargando listado CSR`, contiene el bot+¦n `Refrescar datos` y no contiene `Laboratorio de Redes`, lo que confirma que la lista no llega prerenderizada como SSR.
+  Tambi+ï¿½n comprob+ï¿½ manualmente `http://localhost:3000/inspecciones`: el HTML inicial contiene `Cargando listado CSR`, contiene el bot+ï¿½n `Refrescar datos` y no contiene `Laboratorio de Redes`, lo que confirma que la lista no llega prerenderizada como SSR.
 
-- Limitaci+¦n o fallo diagnosticado:
+- Limitaci+ï¿½n o fallo diagnosticado:
 
-  Mi tarjeta individual solo cubre la ruta CSR del listado. No implement+¬ `src/app/inspecciones/[id]/page.tsx`, `src/components/loading-state.tsx`, `docs/rendering-decision.md` ni `tests/rendering.spec.ts`, porque esos entregables corresponden al trabajo de otros integrantes o a la integraci+¦n del equipo.
+  Mi tarjeta individual solo cubre la ruta CSR del listado. No implement+ï¿½ `src/app/inspecciones/[id]/page.tsx`, `src/components/loading-state.tsx`, `docs/rendering-decision.md` ni `tests/rendering.spec.ts`, porque esos entregables corresponden al trabajo de otros integrantes o a la integraci+ï¿½n del equipo.
 
-- Cambio que podr+¡a defender o modificar en vivo:
+- Cambio que podr+ï¿½a defender o modificar en vivo:
 
-  Puedo explicar c+¦mo se demuestran los tres estados: `loading` aparece antes de cargar los datos, `ready` muestra las inspecciones sint+¬ticas y `error` se activa con el bot+¦n `Simular error` sin romper la ruta.
+  Puedo explicar c+ï¿½mo se demuestran los tres estados: `loading` aparece antes de cargar los datos, `ready` muestra las inspecciones sint+ï¿½ticas y `error` se activa con el bot+ï¿½n `Simular error` sin romper la ruta.
 
-- Uso declarado de IA (herramienta, prop+¦sito, validaci+¦n):
+- Uso declarado de IA (herramienta, prop+ï¿½sito, validaci+ï¿½n):
 
-  Utilic+¬ ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+¬ manualmente el comportamiento de la ruta y ejecut+¬ pruebas, build y verificaci+¦n antes de preparar el commit.
+  Utilic+ï¿½ ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+ï¿½ manualmente el comportamiento de la ruta y ejecut+ï¿½ pruebas, build y verificaci+ï¿½n antes de preparar el commit.

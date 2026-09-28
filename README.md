@@ -305,6 +305,201 @@ La suite completa verifica:
 - almacenamiento de respuestas válidas;
 - fallback offline HTTP 503.
 
+
+## Evidencia de Semana 4
+
+La Semana 4 implementa y compara dos estrategias de renderizado para el flujo de inspecciones:
+
+- CSR para el listado.
+- SSR para el detalle de una inspección.
+
+Archivos principales:
+
+- `src/app/inspecciones/page.tsx`
+- `src/app/inspecciones/[id]/page.tsx`
+- `src/components/loading-state.tsx`
+- `src/app/inspecciones/[id]/loading.tsx`
+- `src/app/inspecciones/[id]/not-found.tsx`
+- `docs/rendering-decision.md`
+- `tests/rendering.spec.ts`
+- `evidence/individual.md`
+
+### Ruta CSR
+
+La ruta:
+
+```text
+/inspecciones
+```
+
+utiliza un Client Component mediante:
+
+```text
+"use client";
+```
+
+La carga de inspecciones se realiza en el navegador utilizando `useEffect` y `useState`.
+
+La ruta contempla los estados:
+
+```text
+loading
+ready
+error
+```
+
+También permite:
+
+- refrescar los datos;
+- filtrar inspecciones con hallazgos;
+- simular un error;
+- reintentar la carga.
+
+Los datos utilizados son sintéticos y provienen de:
+
+```text
+src/lib/data/inspections.ts
+```
+
+### Ruta SSR
+
+La ruta:
+
+```text
+/inspecciones/[id]
+```
+
+utiliza un componente de servidor asíncrono.
+
+El identificador se obtiene mediante:
+
+```text
+params.id
+```
+
+La implementación utiliza datos sintéticos y simula una latencia de servidor.
+
+Cuando el identificador no corresponde a una inspección existente, se utiliza:
+
+```text
+notFound()
+```
+
+para presentar el estado definido en:
+
+```text
+src/app/inspecciones/[id]/not-found.tsx
+```
+
+### Estados de carga
+
+La ruta dinámica utiliza:
+
+```text
+src/app/inspecciones/[id]/loading.tsx
+```
+
+Este archivo utiliza el componente:
+
+```text
+src/components/loading-state.tsx
+```
+
+para mostrar el estado de carga mientras se obtiene el detalle de la inspección.
+
+### Decisión de renderizado
+
+La comparación técnica entre CSR y SSR se documenta en:
+
+```text
+docs/rendering-decision.md
+```
+
+La decisión mantiene CSR para el listado porque requiere interacción directa del usuario, como refrescar y filtrar información.
+
+El detalle utiliza SSR porque corresponde a una ruta dinámica identificada mediante un parámetro y permite gestionar el recurso no encontrado mediante `notFound()`.
+
+La documentación también registra las limitaciones de la implementación, incluyendo el uso de modelos de datos sintéticos diferentes entre el listado y el detalle.
+
+### Pruebas de Semana 4
+
+La prueba específica de renderizado es:
+
+```text
+npx tsx tests/rendering.spec.ts
+```
+
+La prueba verifica de forma determinista:
+
+- existencia de la ruta CSR;
+- existencia de la ruta SSR;
+- uso de `use client` en CSR;
+- uso de `useEffect` y `useState`;
+- carga de datos sintéticos;
+- estados de carga y error del listado;
+- acciones de refresco, filtrado, simulación de error y reintento;
+- implementación SSR mediante función asíncrona;
+- utilización de `params.id`;
+- uso de `notFound()`;
+- datos sintéticos del detalle;
+- estado de carga;
+- estado de recurso no encontrado.
+
+Resultado verificado:
+
+```text
+rendering.spec.ts: PASS
+```
+
+La prueba se incorporó a la suite general mediante `npm test`.
+
+Resultado verificado de la suite:
+
+```text
+starter.spec.mjs: PASS
+manifest.spec.ts: PASS
+register-service-worker.spec.ts: PASS
+service-worker.spec.ts: PASS
+offline.spec.ts: PASS
+rendering.spec.ts: PASS
+```
+
+### Limitaciones de Semana 4
+
+La implementación de esta semana utiliza datos sintéticos.
+
+El listado CSR utiliza el modelo definido en:
+
+```text
+src/lib/data/inspections.ts
+```
+
+mientras que el detalle SSR utiliza datos sintéticos definidos directamente en su ruta.
+
+Por lo tanto, las dos rutas permiten demostrar las estrategias CSR y SSR, pero todavía no utilizan una única fuente de datos real.
+
+Las pruebas automatizadas de renderizado verifican el contrato estructural de los archivos y no sustituyen las pruebas reales en navegador, dispositivo o condiciones de red.
+
+## Decisiones de Semana 4
+
+La decisión técnica de renderizado se encuentra en:
+
+```text
+docs/rendering-decision.md
+```
+
+La implementación mantiene el alcance de la actividad y utiliza únicamente datos sintéticos.
+
+No se incorporan en esta semana:
+
+- datos personales reales;
+- credenciales;
+- tokens;
+- secretos;
+- backend real;
+- persistencia de datos de negocio;
+- sincronización de datos de negocio.
+
 ## Entrega
 
 Antes de entregar:
