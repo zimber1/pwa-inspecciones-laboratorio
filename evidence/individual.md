@@ -127,8 +127,11 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
   Tambien realice la integracion y revision final de los cambios de Semana 04 antes de la verificacion del proyecto.
 
 - Commit SHA evaluado:
+   Commit SHA evaluado:
 
-  El SHA final se obtiene despues del commit de cierre con `git rev-parse HEAD` y se reporta en la entrega. No se fija aqui como valor definitivo porque modificar esta evidencia cambiaria el hash del commit que se esta identificando.
+  `39ad525ebd9dff48a3497d0b5cd8825885763d26`
+
+  Este SHA corresponde al commit de cierre de Semana 04 que contiene la implementacion de las pruebas CSR y SSR, la documentacion de la decision de renderizado, la actualizacion del README y la integracion de la prueba `rendering.spec.ts`. Esta version fue verificada mediante `npm run verify` y publicada en `main`.
 
 - Decision tecnica que puedo explicar:
 
