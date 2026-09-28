@@ -127,7 +127,6 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
   Tambien realice la integracion y revision final de los cambios de Semana 04 antes de la verificacion del proyecto.
 
 - Commit SHA evaluado:
-   Commit SHA evaluado:
 
   `39ad525ebd9dff48a3497d0b5cd8825885763d26`
 
