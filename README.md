@@ -38,7 +38,20 @@ bash public-tests/check.sh
 
 `make verify` ejecuta el equivalente local de `npm run verify`: prueba automatizada y build de Next.js. El reporte local se genera en `reports/verification.json` y no se versiona.
 
-La prueba `tests/manifest.spec.ts` valida comportamiento critico de esta semana: propiedades principales de `public/manifest.webmanifest`, existencia de iconos, referencia del manifest desde `layout.tsx`, uso de `AppShell` desde `page.tsx`, navegacion principal y textos de estados de carga, error y vacio.
+La prueba `tests/manifest.spec.ts` valida propiedades principales de `public/manifest.webmanifest`, existencia de iconos, referencia del manifest desde `layout.tsx`, uso de `AppShell` desde `page.tsx`, navegacion principal y textos de estados de carga, error y vacio.
+
+La prueba `tests/sync.spec.ts` valida la parte individual de Semana 05 de Cesar Gaspar Pacheco: resolucion determinista de conflictos, proteccion contra respuestas de sincronizacion antiguas que llegan tarde, operacion duplicada e inmutabilidad de las entradas.
+
+## Evidencia de Semana 5
+
+Aporte individual de Cesar Gaspar Pacheco:
+
+- `src/lib/sync/conflict-policy.ts`
+- `docs/sync-policy.md`
+- `tests/sync.spec.ts`
+- `evidence/individual.md`
+
+`docs/sync-policy.md` documenta la politica de conflictos y deja como pendiente de integracion la cola offline y el esquema de almacenamiento porque `src/lib/sync/queue.ts` y `src/lib/storage/schema.ts` no estaban presentes en la rama base `develop`.
 
 ## Evidencia de Semana 2
 
