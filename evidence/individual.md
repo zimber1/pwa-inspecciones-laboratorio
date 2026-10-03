@@ -214,3 +214,59 @@
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
   Utilicé ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Validé manualmente los archivos modificados y ejecuté los comandos de prueba, build, verificación y check público antes de preparar la entrega.
+
+### Registro de Evidencia — Actividad 05
+
+- Commit SHA de implementacion:
+
+  `174e0f3e1d6f4867d76daf5ade664d122810c892`
+
+- Mi contribución concreta y enlace a archivo, commit anterior o revisión:
+
+  Implementé la política determinista de resolución de conflictos para inspecciones en `src/lib/sync/conflict-policy.ts`, documenté la decisión en `docs/sync-policy.md`, agregué la prueba reproducible `tests/sync.spec.ts` y conecté esa prueba al script `npm test`. La documentación aclara que `queue.ts` y `schema.ts` quedan pendientes de integración porque no estaban presentes en `develop` al iniciar esta rama.
+
+- Decisión técnica y justificación:
+
+  Decidí resolver conflictos de una misma inspección comparando primero `version`, después `updatedAt` y al final `operationId` como desempate estable. Esta política no depende del orden de llegada de red, por lo que una respuesta antigua de sincronización no puede sobrescribir una versión local más reciente.
+
+- Prueba ejecutada:
+
+  `npm ci`
+
+  `npm test`
+
+  `npm run build`
+
+  `npm run verify`
+
+  `make verify`
+
+  `bash public-tests/check.sh`
+
+- Resultado real:
+
+  `npm ci` instaló correctamente las dependencias, pero mostró aviso porque esta máquina usa Node.js `v20.10.0` y el proyecto declara `>=20.19.0`. También reportó vulnerabilidades transitivas; no ejecuté `npm audit fix --force` porque podría cambiar versiones fuera del alcance individual.
+
+  `npm test` pasó y mostró `starter.spec.mjs: PASS`, `manifest.spec.ts: PASS` y `sync.spec.ts: PASS`.
+
+  `npm run build` compiló correctamente la aplicación con Next.js.
+
+  `npm run verify` terminó con `Verificación técnica: pass` y generó `reports/verification.json`.
+
+  `make verify` no pudo ejecutarse porque `make` no está instalado en esta terminal. El equivalente exacto del Makefile, `npm run verify`, sí fue ejecutado y aprobado.
+
+  `bash public-tests/check.sh` no ejecutó sus validaciones porque el archivo compartido tiene finales de línea Windows y `bash` se detuvo en `set -euo pipefail`. No modifiqué ese script porque no forma parte de mi asignación individual.
+
+- Qué verifica y qué no verifica:
+
+  `tests/sync.spec.ts` verifica que una respuesta vieja de sincronización no reemplace una versión actual más reciente, que el desempate por `operationId` sea determinista, que una operación duplicada conserve la versión actual y que las entradas no se muten durante la resolución.
+
+  No verifica persistencia offline real, reintentos de cola, almacenamiento local ni comunicación con servidor porque `src/lib/sync/queue.ts` y `src/lib/storage/schema.ts` todavía no están integrados en la rama base.
+
+- Limitación o dificultad identificada:
+
+  La principal limitación fue trabajar sobre `develop` sin los archivos de cola y esquema de almacenamiento. Por eso la política queda lista para integrarse, pero la sincronización completa del equipo depende de los entregables de otros integrantes.
+
+- Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
+
+  Utilicé ChatGPT/Codex como apoyo para interpretar las instrucciones de Semana 05, revisar el PDF de asignación, diseñar la política determinista, redactar la documentación y preparar pruebas automatizadas. Validé personalmente los cambios ejecutando instalación, pruebas, build y verificación local antes de preparar la entrega.
