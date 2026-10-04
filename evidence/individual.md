@@ -454,3 +454,50 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 - Uso declarado de IA (herramienta, prop+�sito, validaci+�n):
 
   Utilic+� ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+� manualmente el comportamiento de la ruta y ejecut+� pruebas, build y verificaci+�n antes de preparar el commit.
+
+## Semana 05 - Felix (Persistencia Local y Cola de Sincronización)
+
+- **Mi contribución concreta:**
+
+  Definí e implementé la estructura de datos en `src/lib/storage/schema.ts` y la clase/módulo de cola de sincronización en `src/lib/sync/queue.ts`. Adicionalmente creé la suite de pruebas unitarias `tests/queue.spec.ts` e integré la verificación en el script `test` de `package.json`.
+
+- **Commit SHA evaluado:**
+
+  El SHA final se confirmará al enviar el commit de cierre de la entrega mediante `git rev-parse HEAD`.
+
+- **Decisión técnica que puedo explicar:**
+
+  1. **Estructura del Esquema (`schema.ts`):** Diseñé la interfaz `SyncOperation` con identificador único (`id`), clave de idempotencia (`idempotencyKey`), tipo de acción (`action`), payload sintético (`LocalInspection`), estados explícitos (`'pending'`, `'processed'`, `'failed'`), contador de reintentos (`retryCount`), marca de tiempo (`createdAt`, `lastAttemptAt`) y registro de error (`errorMessage`).
+  2. **Cola de Sincronización (`queue.ts`):** Implementé la clase `SyncQueue` que garantiza la adición idempotente de operaciones (evitando duplicados ante reintentos o inserciones múltiples de una misma inspección).
+  3. **Manejo de Reintentos y Fallos:** El método `processQueue` itera sobre las operaciones pendientes. Si el intento de envío/sincronización falla, la operación permanece persistida con estado `'failed'`, incrementa su contador de reintentos y almacena el mensaje de error para poder ser reintentada en ciclos posteriores sin perder datos.
+
+- **Prueba que ejecuté y resultado:**
+
+  `npm test`
+
+  Resultado:
+  `starter.spec.mjs: PASS`
+  `manifest.spec.ts: PASS`
+  `register-service-worker.spec.ts: PASS`
+  `service-worker.spec.ts: PASS`
+  `offline.spec.ts: PASS`
+  `rendering.spec.ts: PASS`
+  `queue.spec.ts: PASS`
+
+- **Qué verifica y qué no verifica:**
+
+  `tests/queue.spec.ts` verifica la incorporación de operaciones, la recuperación de pendientes, la prevención de registros duplicados por clave de idempotencia, la conservación de operaciones tras fallos de red simulados con incremento de reintentos y el cambio de estado a procesado tras una sincronización exitosa.
+
+  Esta prueba valida el contrato de persistencia local y ciclo de vida de la cola en el entorno de ejecución Node/TypeScript. No sustituye la integración visual en interfaz ni la resolución de conflictos remotos avanzada que son responsabilidad de otros integrantes del equipo.
+
+- **Limitación o fallo diagnosticado:**
+
+  La implementación actual utiliza un almacenamiento en memoria respaldado por la estructura de esquemas persistibles para mantener compatibilidad tanto en entorno Node.js (`tsx`) como en navegador. No se incluye en este alcance individual la política de conflictos (`conflict-policy.ts`) ni la vista UI dedicada a sincronización, las cuales corresponden a la asignación de los demás integrantes del equipo.
+
+- **Cambio que podría defender o modificar en vivo:**
+
+  Puedo explicar en detalle el ciclo de vida de una operación en la cola (`pending` -> `failed` con reintento -> `processed`), el funcionamiento del mecanismo de idempotencia por `idempotencyKey` para evitar registros duplicados, y la suite de pruebas en `tests/queue.spec.ts`.
+
+- **Uso declarado de IA (herramienta, propósito, validación):**
+
+  Utilicé Antigravity (modelo Gemini) como asistente de programación para definir el esquema de datos TypeScript, estructurar la clase de cola de sincronización de manera idempotente, preparar la suite de pruebas unitarias y redactar esta evidencia técnica. Validé personalmente la compilación, la ejecución de las 7 pruebas unitarias y el build de producción antes de confirmar cada commit atómico.
