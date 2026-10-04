@@ -21,6 +21,7 @@ export type LocalInspection = Inspection & {
   isOfflineCreated?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  version: number;
 };
 
 /**

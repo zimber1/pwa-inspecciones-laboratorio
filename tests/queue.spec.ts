@@ -13,7 +13,8 @@ async function main() {
     status: "ok",
     statusLabel: "Sin incidencias",
     findings: 0,
-    summary: "Inspección de prueba sintética para cola offline."
+    summary: "Inspección de prueba sintética para cola offline.",
+    version: 1
   };
 
   const queue = new SyncQueue();
@@ -91,6 +92,54 @@ async function main() {
   assert.equal(processedOp?.status, "processed", "El estado final de la operación debe ser 'processed'");
   assert.equal(processedOp?.retryCount, 2, "El contador de reintentos debe reflejar 2 intentos en total");
   assert.equal(queue.getPending().length, 0, "Ya no deben quedar operaciones pendientes en la cola");
+
+      // ============================================================
+  // TEST 6: PERSISTENCIA EN LOCALSTORAGE
+  // ============================================================
+  const storage = new Map<string, string>();
+
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      localStorage: {
+        getItem: (key: string) => storage.get(key) ?? null,
+        setItem: (key: string, value: string) => {
+          storage.set(key, value);
+        },
+      },
+    },
+  });
+
+  const persistentQueue = new SyncQueue();
+
+  const persistentOp = persistentQueue.enqueue(
+    sampleInspection,
+    "CREATE_INSPECTION",
+    {
+      idempotencyKey: "persistent-key-001",
+    }
+  );
+
+  const recoveredQueue = new SyncQueue();
+  const recoveredOp = recoveredQueue.getById(persistentOp.id);
+
+  assert.notEqual(
+    recoveredOp,
+    undefined,
+    "Una nueva instancia debe recuperar la operación persistida"
+  );
+
+  assert.equal(
+    recoveredOp?.id,
+    persistentOp.id,
+    "La operación recuperada debe conservar su ID"
+  );
+
+  assert.equal(
+    recoveredOp?.status,
+    "pending",
+    "La operación recuperada debe conservar su estado"
+  );
 
   console.log("queue.spec.ts: PASS");
 }

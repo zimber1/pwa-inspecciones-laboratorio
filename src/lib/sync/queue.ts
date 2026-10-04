@@ -2,6 +2,8 @@ import { SyncOperation, LocalInspection, SyncActionType } from "../storage/schem
 
 export type ProcessSyncHandler = (operation: SyncOperation) => Promise<boolean> | boolean;
 
+const STORAGE_KEY = "pwa-inspecciones-sync-queue";
+
 /**
  * Clase principal para la administración de la cola de sincronización local.
  * Implementa agregación idempotente, recuperación de pendientes,
@@ -12,6 +14,49 @@ export class SyncQueue {
 
   constructor() {
     this.operations = new Map();
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage(): void {
+    if (typeof window === "undefined" || !window.localStorage) {
+      return;
+    }
+
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+
+    if (!stored) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(stored) as {
+        version: number;
+        operations: SyncOperation[];
+      };
+
+      if (!Array.isArray(parsed.operations)) {
+        return;
+      }
+
+      this.operations = new Map(
+        parsed.operations.map((operation) => [operation.id, operation])
+      );
+    } catch {
+      this.operations = new Map();
+    }
+  }
+
+  private saveToStorage(): void {
+    if (typeof window === "undefined" || !window.localStorage) {
+      return;
+    }
+
+    const data = {
+      version: 1,
+      operations: Array.from(this.operations.values())
+    };
+
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
   /**
@@ -46,6 +91,8 @@ export class SyncQueue {
     };
 
     this.operations.set(id, newOperation);
+    this.saveToStorage();
+
     return newOperation;
   }
 
@@ -118,6 +165,7 @@ export class SyncQueue {
       }
 
       this.operations.set(op.id, op);
+      this.saveToStorage();
     }
 
     return { processed, failed };
@@ -128,6 +176,7 @@ export class SyncQueue {
    */
   public clear(): void {
     this.operations.clear();
+    this.saveToStorage();
   }
 }
 
