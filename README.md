@@ -500,6 +500,121 @@ No se incorporan en esta semana:
 - persistencia de datos de negocio;
 - sincronización de datos de negocio.
 
+## Semana 5 — Persistencia local y sincronización offline
+
+La Semana 5 incorpora persistencia local de operaciones de inspección, una cola
+de sincronización y una política determinista para resolver conflictos entre
+versiones de una misma inspección.
+
+### Esquema de almacenamiento
+
+El contrato de datos se encuentra en:
+
+```text
+src/lib/storage/schema.ts
+```
+
+Define:
+
+- `LocalInspection` para representar inspecciones locales;
+- `SyncOperation` para representar operaciones de sincronización;
+- estados `pending`, `processed` y `failed`;
+- `idempotencyKey` para evitar operaciones duplicadas;
+- `retryCount` y `lastAttemptAt` para registrar los intentos;
+- `errorMessage` para conservar información de fallos.
+
+### Cola de sincronización
+
+La implementación se encuentra en:
+
+```text
+src/lib/sync/queue.ts
+```
+
+`SyncQueue` conserva las operaciones pendientes, aplica idempotencia y permite
+procesarlas mediante un handler de sincronización.
+
+La cola utiliza `localStorage` para conservar las operaciones entre instancias
+de la aplicación cuando el entorno dispone de almacenamiento local.
+
+Cuando una operación falla, conserva su estado `failed`, incrementa el contador
+de reintentos y registra el error para permitir un procesamiento posterior.
+
+### Política de conflictos
+
+La resolución de conflictos se encuentra en:
+
+```text
+src/lib/sync/conflict-policy.ts
+```
+
+La política se aplica cuando existen dos versiones de la misma inspección y
+utiliza una decisión determinista:
+
+1. Gana la versión numérica más alta.
+2. Si la versión empata, gana el `updatedAt` más reciente.
+3. Si versión y fecha empatan, gana el `operationId` lexicográficamente mayor.
+4. Si también coincide el `operationId`, se considera una operación duplicada
+   y se conserva la versión actual.
+
+La decisión completa se documenta en:
+
+```text
+docs/sync-policy.md
+```
+
+### Pruebas de Semana 5
+
+Las pruebas de la cola se encuentran en:
+
+```text
+tests/queue.spec.ts
+```
+
+y las pruebas de resolución de conflictos en:
+
+```text
+tests/sync.spec.ts
+```
+
+`tests/queue.spec.ts` verifica:
+
+- incorporación de operaciones;
+- recuperación de operaciones pendientes;
+- idempotencia;
+- conservación de operaciones después de un fallo;
+- incremento de reintentos;
+- procesamiento exitoso;
+- persistencia y recuperación mediante `localStorage`.
+
+`tests/sync.spec.ts` verifica:
+
+- que una versión antigua no sobrescriba una versión más reciente;
+- que la decisión sea determinista;
+- que una operación duplicada conserve la versión actual;
+- que los objetos de entrada no sean mutados.
+
+La suite completa se ejecuta mediante:
+
+```bash
+npm test
+```
+
+### Alcance y limitaciones
+
+La persistencia implementada corresponde a las operaciones de sincronización y
+no representa todavía una base de datos remota de negocio.
+
+La política de conflictos no realiza merge campo por campo; selecciona una
+versión completa mediante reglas deterministas.
+
+El proyecto continúa utilizando datos sintéticos y no incorpora datos
+personales reales, credenciales, tokens ni secretos.
+
+La cola y la política de conflictos constituyen la base técnica para una
+sincronización posterior con un servicio remoto, pero esta semana no incorpora
+una integración institucional real.
+
 ## Entrega
 
 Antes de entregar:
