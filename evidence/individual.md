@@ -188,6 +188,56 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
   Utilice ChatGPT como herramienta de apoyo para interpretar los requerimientos de la Semana 04, revisar la implementacion existente, estructurar `tests/rendering.spec.ts`, organizar `docs/rendering-decision.md` y actualizar la documentacion del `README.md`.
 
   Revise manualmente los cambios realizados y valide la implementacion ejecutando las pruebas correspondientes y la suite general del proyecto. Los resultados registrados en esta evidencia corresponden a ejecuciones realizadas en el entorno local del proyecto.
+  ## Semana 05 - Claudia (Integración y Verificación)
+
+- **Mi contribución concreta:**
+
+  Integré y verifiqué los entregables de persistencia local y sincronización de la Semana 05. Revisé la integración entre `src/lib/storage/schema.ts`, `src/lib/sync/queue.ts`, `src/lib/sync/conflict-policy.ts`, `tests/queue.spec.ts` y `tests/sync.spec.ts`. También actualicé `README.md` con la documentación de Semana 05 y consolidé `docs/sync-policy.md` para reflejar el estado integrado del proyecto.
+
+- **Commit SHA evaluado:**
+
+  El SHA final se confirmará después del commit de cierre de la integración mediante `git rev-parse HEAD`.
+
+- **Decisión técnica que puedo explicar:**
+
+  Mantuve separadas las responsabilidades de persistencia, cola y resolución de conflictos. La cola conserva las operaciones pendientes y utiliza persistencia local, mientras que la política de conflictos determina de forma determinista qué versión de una inspección debe prevalecer. La integración conserva la responsabilidad individual de cada integrante y evita duplicar la implementación de sus componentes.
+
+- **Pruebas ejecutadas y resultado:**
+
+  `npm test`
+
+  Resultado: las 8 pruebas terminaron correctamente:
+
+  `starter.spec.mjs: PASS`  
+  `manifest.spec.ts: PASS`  
+  `register-service-worker.spec.ts: PASS`  
+  `service-worker.spec.ts: PASS`  
+  `offline.spec.ts: PASS`  
+  `rendering.spec.ts: PASS`  
+  `queue.spec.ts: PASS`  
+  `sync.spec.ts: PASS`
+
+  `npm run build`
+
+  Resultado: compilación de producción correcta con Next.js `14.2.35`, incluyendo las rutas `/`, `/inspecciones` y `/inspecciones/[id]`.
+
+  `npm run verify`
+
+  Resultado: `Verificación técnica: pass`. El proceso volvió a ejecutar las pruebas y el build, y generó `reports/verification.json`.
+
+- **Qué verifica y qué no verifica:**
+
+  La validación confirma que los componentes y pruebas integrados de la Semana 05 funcionan conjuntamente dentro de la suite actual y que el proyecto mantiene compilación y verificación técnica correctas.
+
+  No implica que exista una integración real con un servidor institucional ni que la revisión académica esté aprobada. Tampoco sustituye las pruebas específicas de cada componente individual.
+
+- **Limitación o dificultad identificada:**
+
+  La principal dificultad de integración fue coordinar componentes desarrollados en ramas individuales y conservar sus responsabilidades sin sobrescribir el trabajo de otros integrantes. También fue necesario actualizar la documentación para que reflejara el estado integrado de la Semana 05.
+
+- **Uso declarado de IA herramienta, propósito, partes influenciadas y validación propia:**
+
+  Utilicé ChatGPT/Codex como apoyo para revisar la integración de Semana 05, organizar la documentación, revisar la evidencia y estructurar las verificaciones. Validé personalmente los cambios ejecutando `npm test`, `npm run build` y `npm run verify`, y revisé los resultados obtenidos antes de preparar la entrega.
 
 ## Integrante: Felix Ivan Garcia Flores (3523110172)
 
@@ -299,6 +349,84 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
   Utilicé Antigravity (Gemini) como asistente de programación por pares (pair programming) para estructurar el núcleo del `sw.js` (incluyendo los eventos install, activate y fetch), redactar el documento técnico `docs/cache-strategy.md` con la sintaxis de diagramas Mermaid, y formular de forma clara la presente evidencia técnica bajo el formato requerido. Se realizaron commits atómicos locales revisados en conjunto.
 
+  ## Semana 04 - Felix (Ruta SSR: Detalle de Inspeccion)
+
+- Mi contribucion concreta y enlace a archivo, commit anterior o revision:
+
+  Implemente la ruta dinamica SSR para el detalle de inspecciones en src/app/inspecciones/[id]/page.tsx, trabajando con datos sinteticos y manejando los estados de carga con src/app/inspecciones/[id]/loading.tsx y src/components/loading-state.tsx, asi como el estado de error con src/app/inspecciones/[id]/not-found.tsx.
+
+- Commit SHA evaluado:
+
+  SHA del commit principal de mi implementacion SSR: 783099b. (El SHA final exacto se reportara al enviar la entrega, usando git rev-parse HEAD).
+
+- Decision tecnica que puedo explicar:
+
+  Utilice Server-Side Rendering (SSR) de Next.js (Componentes de Servidor asincronos). AÃ±adi un retraso artificial de 1500ms mediante una Promesa para poder comprobar visualmente el estado de carga y validar que el archivo loading.tsx funciona. Maneje los identificadores inexistentes utilizando notFound() de next/navigation, lo cual delega automaticamente la UI a not-found.tsx.
+
+- Prueba que ejecute y resultado:
+
+  Verificacion del renderizado en entorno de desarrollo. Navegue a /inspecciones/INS-001 y /inspecciones/INS-002, comprobando la aparicion del componente de carga y posterior renderizado exitoso de los detalles (Laboratorio, Estado, Fecha, Inspector, etc.). Al ingresar a /inspecciones/INVALID, comprobe que la UI muestra la pantalla de "Inspeccion no encontrada".
+
+- Limitacion o fallo diagnosticado:
+
+  La principal limitacion es que la data es 100% sintetica y en memoria (mock data). Si la base de datos creciera significativamente, no habria paginacion y al ser SSR, cada peticion realiza un "fetching" (simulado) que retiene el servidor. Todavia no estamos usando pre-renderizado (SSG) ni validaciones con un backend real.
+
+- Uso declarado de IA:
+
+  Utilice Antigravity (modelo Gemini) como asistente para generar la estructura inicial de los componentes page.tsx, loading.tsx y not-found.tsx, y para la redaccion de este formato de evidencia asegurando el cumplimiento de la rubrica de evaluacion, validando los resultados mediante revision de codigo en conjunto.
+
+
+- Uso de IA: herramienta, prop+�sito, partes influenciadas y validaci+�n propia:
+
+  Utilic+� ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+� manualmente los archivos modificados y ejecut+� los comandos de prueba, build, verificaci+�n y check p+�blico antes de preparar la entrega.
+
+  ## Semana 05 - Felix (Persistencia Local y Cola de Sincronización)
+
+- **Mi contribución concreta:**
+
+  Definí e implementé la estructura de datos en `src/lib/storage/schema.ts` y la clase/módulo de cola de sincronización en `src/lib/sync/queue.ts`. Adicionalmente creé la suite de pruebas unitarias `tests/queue.spec.ts` e integré la verificación en el script `test` de `package.json`.
+
+- **Commit SHA evaluado:**
+
+  El SHA final se confirmará al enviar el commit de cierre de la entrega mediante `git rev-parse HEAD`.
+
+- **Decisión técnica que puedo explicar:**
+
+  1. **Estructura del Esquema (`schema.ts`):** Diseñé la interfaz `SyncOperation` con identificador único (`id`), clave de idempotencia (`idempotencyKey`), tipo de acción (`action`), payload sintético (`LocalInspection`), estados explícitos (`'pending'`, `'processed'`, `'failed'`), contador de reintentos (`retryCount`), marca de tiempo (`createdAt`, `lastAttemptAt`) y registro de error (`errorMessage`).
+  2. **Cola de Sincronización (`queue.ts`):** Implementé la clase `SyncQueue` que garantiza la adición idempotente de operaciones (evitando duplicados ante reintentos o inserciones múltiples de una misma inspección).
+  3. **Manejo de Reintentos y Fallos:** El método `processQueue` itera sobre las operaciones pendientes. Si el intento de envío/sincronización falla, la operación permanece persistida con estado `'failed'`, incrementa su contador de reintentos y almacena el mensaje de error para poder ser reintentada en ciclos posteriores sin perder datos.
+
+- **Prueba que ejecuté y resultado:**
+
+  `npm test`
+
+  Resultado:
+  `starter.spec.mjs: PASS`
+  `manifest.spec.ts: PASS`
+  `register-service-worker.spec.ts: PASS`
+  `service-worker.spec.ts: PASS`
+  `offline.spec.ts: PASS`
+  `rendering.spec.ts: PASS`
+  `queue.spec.ts: PASS`
+
+- **Qué verifica y qué no verifica:**
+
+  `tests/queue.spec.ts` verifica la incorporación de operaciones, la recuperación de pendientes, la prevención de registros duplicados por clave de idempotencia, la conservación de operaciones tras fallos de red simulados con incremento de reintentos y el cambio de estado a procesado tras una sincronización exitosa.
+
+  Esta prueba valida el contrato de persistencia local y ciclo de vida de la cola en el entorno de ejecución Node/TypeScript. No sustituye la integración visual en interfaz ni la resolución de conflictos remotos avanzada que son responsabilidad de otros integrantes del equipo.
+
+- **Limitación o fallo diagnosticado:**
+
+  La implementación actual utiliza un almacenamiento en memoria respaldado por la estructura de esquemas persistibles para mantener compatibilidad tanto en entorno Node.js (`tsx`) como en navegador. No se incluye en este alcance individual la política de conflictos (`conflict-policy.ts`) ni la vista UI dedicada a sincronización, las cuales corresponden a la asignación de los demás integrantes del equipo.
+
+- **Cambio que podría defender o modificar en vivo:**
+
+  Puedo explicar en detalle el ciclo de vida de una operación en la cola (`pending` -> `failed` con reintento -> `processed`), el funcionamiento del mecanismo de idempotencia por `idempotencyKey` para evitar registros duplicados, y la suite de pruebas en `tests/queue.spec.ts`.
+
+- **Uso declarado de IA (herramienta, propósito, validación):**
+
+  Utilicé Antigravity (modelo Gemini) como asistente de programación para definir el esquema de datos TypeScript, estructurar la clase de cola de sincronización de manera idempotente, preparar la suite de pruebas unitarias y redactar esta evidencia técnica. Validé personalmente la compilación, la ejecución de las 7 pruebas unitarias y el build de producción antes de confirmar cada commit atómico.
+
 ## Integrante: Cesar Gaspar Pacheco (3522110305)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
@@ -387,38 +515,6 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
   Utilicé ChatGPT/Codex para interpretar el kit de Semana 03, contrastarlo con mi tarjeta individual, revisar el conflicto real de manifests, redactar el registro del service worker y preparar pruebas. Validé personalmente los archivos modificados y ejecuté las pruebas, build, verificación y comprobación manual del manifest antes de entregar.
 
-
-## Semana 04 - Felix (Ruta SSR: Detalle de Inspeccion)
-
-- Mi contribucion concreta y enlace a archivo, commit anterior o revision:
-
-  Implemente la ruta dinamica SSR para el detalle de inspecciones en src/app/inspecciones/[id]/page.tsx, trabajando con datos sinteticos y manejando los estados de carga con src/app/inspecciones/[id]/loading.tsx y src/components/loading-state.tsx, asi como el estado de error con src/app/inspecciones/[id]/not-found.tsx.
-
-- Commit SHA evaluado:
-
-  SHA del commit principal de mi implementacion SSR: 783099b. (El SHA final exacto se reportara al enviar la entrega, usando git rev-parse HEAD).
-
-- Decision tecnica que puedo explicar:
-
-  Utilice Server-Side Rendering (SSR) de Next.js (Componentes de Servidor asincronos). AÃ±adi un retraso artificial de 1500ms mediante una Promesa para poder comprobar visualmente el estado de carga y validar que el archivo loading.tsx funciona. Maneje los identificadores inexistentes utilizando notFound() de next/navigation, lo cual delega automaticamente la UI a not-found.tsx.
-
-- Prueba que ejecute y resultado:
-
-  Verificacion del renderizado en entorno de desarrollo. Navegue a /inspecciones/INS-001 y /inspecciones/INS-002, comprobando la aparicion del componente de carga y posterior renderizado exitoso de los detalles (Laboratorio, Estado, Fecha, Inspector, etc.). Al ingresar a /inspecciones/INVALID, comprobe que la UI muestra la pantalla de "Inspeccion no encontrada".
-
-- Limitacion o fallo diagnosticado:
-
-  La principal limitacion es que la data es 100% sintetica y en memoria (mock data). Si la base de datos creciera significativamente, no habria paginacion y al ser SSR, cada peticion realiza un "fetching" (simulado) que retiene el servidor. Todavia no estamos usando pre-renderizado (SSG) ni validaciones con un backend real.
-
-- Uso declarado de IA:
-
-  Utilice Antigravity (modelo Gemini) como asistente para generar la estructura inicial de los componentes page.tsx, loading.tsx y not-found.tsx, y para la redaccion de este formato de evidencia asegurando el cumplimiento de la rubrica de evaluacion, validando los resultados mediante revision de codigo en conjunto.
-
-
-- Uso de IA: herramienta, prop+�sito, partes influenciadas y validaci+�n propia:
-
-  Utilic+� ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+� manualmente los archivos modificados y ejecut+� los comandos de prueba, build, verificaci+�n y check p+�blico antes de preparar la entrega.
-
 ## Semana 04 - Cesar Gaspar Pacheco (3522110305)
 
 - Mi contribuci+�n concreta:
@@ -455,49 +551,58 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
   Utilic+� ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+� manualmente el comportamiento de la ruta y ejecut+� pruebas, build y verificaci+�n antes de preparar el commit.
 
-## Semana 05 - Felix (Persistencia Local y Cola de Sincronización)
+  ### Registro de Evidencia — Actividad 05
 
-- **Mi contribución concreta:**
+- Commit SHA de implementacion:
 
-  Definí e implementé la estructura de datos en `src/lib/storage/schema.ts` y la clase/módulo de cola de sincronización en `src/lib/sync/queue.ts`. Adicionalmente creé la suite de pruebas unitarias `tests/queue.spec.ts` e integré la verificación en el script `test` de `package.json`.
+  `174e0f3e1d6f4867d76daf5ade664d122810c892`
 
-- **Commit SHA evaluado:**
+- Mi contribución concreta y enlace a archivo, commit anterior o revisión:
 
-  El SHA final se confirmará al enviar el commit de cierre de la entrega mediante `git rev-parse HEAD`.
+  Implementé la política determinista de resolución de conflictos para inspecciones en `src/lib/sync/conflict-policy.ts`, documenté la decisión en `docs/sync-policy.md`, agregué la prueba reproducible `tests/sync.spec.ts` y conecté esa prueba al script `npm test`. La documentación aclara que `queue.ts` y `schema.ts` quedan pendientes de integración porque no estaban presentes en `develop` al iniciar esta rama.
 
-- **Decisión técnica que puedo explicar:**
+- Decisión técnica y justificación:
 
-  1. **Estructura del Esquema (`schema.ts`):** Diseñé la interfaz `SyncOperation` con identificador único (`id`), clave de idempotencia (`idempotencyKey`), tipo de acción (`action`), payload sintético (`LocalInspection`), estados explícitos (`'pending'`, `'processed'`, `'failed'`), contador de reintentos (`retryCount`), marca de tiempo (`createdAt`, `lastAttemptAt`) y registro de error (`errorMessage`).
-  2. **Cola de Sincronización (`queue.ts`):** Implementé la clase `SyncQueue` que garantiza la adición idempotente de operaciones (evitando duplicados ante reintentos o inserciones múltiples de una misma inspección).
-  3. **Manejo de Reintentos y Fallos:** El método `processQueue` itera sobre las operaciones pendientes. Si el intento de envío/sincronización falla, la operación permanece persistida con estado `'failed'`, incrementa su contador de reintentos y almacena el mensaje de error para poder ser reintentada en ciclos posteriores sin perder datos.
+  Decidí resolver conflictos de una misma inspección comparando primero `version`, después `updatedAt` y al final `operationId` como desempate estable. Esta política no depende del orden de llegada de red, por lo que una respuesta antigua de sincronización no puede sobrescribir una versión local más reciente.
 
-- **Prueba que ejecuté y resultado:**
+- Prueba ejecutada:
+
+  `npm ci`
 
   `npm test`
 
-  Resultado:
-  `starter.spec.mjs: PASS`
-  `manifest.spec.ts: PASS`
-  `register-service-worker.spec.ts: PASS`
-  `service-worker.spec.ts: PASS`
-  `offline.spec.ts: PASS`
-  `rendering.spec.ts: PASS`
-  `queue.spec.ts: PASS`
+  `npm run build`
 
-- **Qué verifica y qué no verifica:**
+  `npm run verify`
 
-  `tests/queue.spec.ts` verifica la incorporación de operaciones, la recuperación de pendientes, la prevención de registros duplicados por clave de idempotencia, la conservación de operaciones tras fallos de red simulados con incremento de reintentos y el cambio de estado a procesado tras una sincronización exitosa.
+  `make verify`
 
-  Esta prueba valida el contrato de persistencia local y ciclo de vida de la cola en el entorno de ejecución Node/TypeScript. No sustituye la integración visual en interfaz ni la resolución de conflictos remotos avanzada que son responsabilidad de otros integrantes del equipo.
+  `bash public-tests/check.sh`
 
-- **Limitación o fallo diagnosticado:**
+- Resultado real:
 
-  La implementación actual utiliza un almacenamiento en memoria respaldado por la estructura de esquemas persistibles para mantener compatibilidad tanto en entorno Node.js (`tsx`) como en navegador. No se incluye en este alcance individual la política de conflictos (`conflict-policy.ts`) ni la vista UI dedicada a sincronización, las cuales corresponden a la asignación de los demás integrantes del equipo.
+  `npm ci` instaló correctamente las dependencias, pero mostró aviso porque esta máquina usa Node.js `v20.10.0` y el proyecto declara `>=20.19.0`. También reportó vulnerabilidades transitivas; no ejecuté `npm audit fix --force` porque podría cambiar versiones fuera del alcance individual.
 
-- **Cambio que podría defender o modificar en vivo:**
+  `npm test` pasó y mostró `starter.spec.mjs: PASS`, `manifest.spec.ts: PASS` y `sync.spec.ts: PASS`.
 
-  Puedo explicar en detalle el ciclo de vida de una operación en la cola (`pending` -> `failed` con reintento -> `processed`), el funcionamiento del mecanismo de idempotencia por `idempotencyKey` para evitar registros duplicados, y la suite de pruebas en `tests/queue.spec.ts`.
+  `npm run build` compiló correctamente la aplicación con Next.js.
 
-- **Uso declarado de IA (herramienta, propósito, validación):**
+  `npm run verify` terminó con `Verificación técnica: pass` y generó `reports/verification.json`.
 
-  Utilicé Antigravity (modelo Gemini) como asistente de programación para definir el esquema de datos TypeScript, estructurar la clase de cola de sincronización de manera idempotente, preparar la suite de pruebas unitarias y redactar esta evidencia técnica. Validé personalmente la compilación, la ejecución de las 7 pruebas unitarias y el build de producción antes de confirmar cada commit atómico.
+  `make verify` no pudo ejecutarse porque `make` no está instalado en esta terminal. El equivalente exacto del Makefile, `npm run verify`, sí fue ejecutado y aprobado.
+
+  `bash public-tests/check.sh` no ejecutó sus validaciones porque el archivo compartido tiene finales de línea Windows y `bash` se detuvo en `set -euo pipefail`. No modifiqué ese script porque no forma parte de mi asignación individual.
+
+- Qué verifica y qué no verifica:
+
+  `tests/sync.spec.ts` verifica que una respuesta vieja de sincronización no reemplace una versión actual más reciente, que el desempate por `operationId` sea determinista, que una operación duplicada conserve la versión actual y que las entradas no se muten durante la resolución.
+
+  La persistencia offline, los reintentos de cola y el almacenamiento local corresponden a la implementación de `src/lib/sync/queue.ts` y `src/lib/storage/schema.ts`, integrada por otro integrante. La prueba de César se concentra en la resolución determinista de conflictos.
+
+- Limitación o dificultad identificada:
+
+  La principal dificultad fue trabajar inicialmente sobre una rama que no contenía todavía los archivos de cola y esquema de almacenamiento. Por ello, la política de conflictos se implementó y validó de forma independiente antes de la integración del trabajo del equipo.
+
+- Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
+
+  Utilicé ChatGPT/Codex como apoyo para interpretar las instrucciones de Semana 05, revisar el PDF de asignación, diseñar la política determinista, redactar la documentación y preparar pruebas automatizadas. Validé personalmente los cambios ejecutando instalación, pruebas, build y verificación local antes de preparar la entrega.
