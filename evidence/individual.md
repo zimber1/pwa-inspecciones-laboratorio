@@ -376,9 +376,9 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
   Utilice Antigravity (modelo Gemini) como asistente para generar la estructura inicial de los componentes page.tsx, loading.tsx y not-found.tsx, y para la redaccion de este formato de evidencia asegurando el cumplimiento de la rubrica de evaluacion, validando los resultados mediante revision de codigo en conjunto.
 
 
-- Uso de IA: herramienta, prop+�sito, partes influenciadas y validaci+�n propia:
+- Uso de IA: herramienta, prop+sito, partes influenciadas y validaci+n propia:
 
-  Utilic+� ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+� manualmente los archivos modificados y ejecut+� los comandos de prueba, build, verificaci+�n y check p+�blico antes de preparar la entrega.
+  Utilic+ ChatGPT/Codex como apoyo para interpretar el kit de Semana 2, revisar los checks, implementar el shell, redactar pruebas y organizar esta evidencia. Valid+ manualmente los archivos modificados y ejecut+ los comandos de prueba, build, verificaci+n y check p+blico antes de preparar la entrega.
 
   ## Semana 05 - Felix (Persistencia Local y Cola de Sincronización)
 
@@ -517,39 +517,39 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
 ## Semana 04 - Cesar Gaspar Pacheco (3522110305)
 
-- Mi contribuci+�n concreta:
+- Mi contribuci+n concreta:
 
-  Implement+� mi parte individual de la Semana 04 en `src/app/inspecciones/page.tsx`: la ruta `/inspecciones` usa CSR, carga datos sint+�ticos desde el navegador, muestra listado verificable y contempla estados de carga, contenido y error.
+  Implement+ mi parte individual de la Semana 04 en `src/app/inspecciones/page.tsx`: la ruta `/inspecciones` usa CSR, carga datos sint+ticos desde el navegador, muestra listado verificable y contempla estados de carga, contenido y error.
 
 - Commit SHA evaluado:
 
-  El SHA final se obtiene despu+�s del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escribo aqu+� como valor fijo porque modificar este archivo cambiar+�a el hash del commit.
+  El SHA final se obtiene despu+s del commit con `git rev-parse HEAD` y se reporta en la entrega. No lo escrib+ aqu+ como valor fijo porque modificar este archivo cambiar+a el hash del commit.
 
-- Decisi+�n t+�cnica que puedo explicar:
+- Decisi+n t+cnica que puedo explicar:
 
-  Us+� CSR para el listado porque esta pantalla necesita interacci+�n inmediata del navegador: refrescar datos, filtrar inspecciones con hallazgos y simular un fallo controlado. Dej+� la carga de datos dentro de `useEffect` y `useState`, de modo que el HTML inicial muestra el estado de carga y el listado se completa despu+�s en cliente.
+  Us+ CSR para el listado porque esta pantalla necesita interacci+n inmediata del navegador: refrescar datos, filtrar inspecciones con hallazgos y simular un fallo controlado. Dej+ la carga de datos dentro de `useEffect` y `useState`, de modo que el HTML inicial muestra el estado de carga y el listado se completa despu+s en cliente.
 
-- Prueba que ejecut+� y resultado:
+- Prueba que ejecut+ y resultado:
 
-  `npm test` termin+� correctamente con `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
+  `npm test` termin+ correctamente con `starter.spec.mjs: PASS` y `manifest.spec.ts: PASS`.
 
-  `npm run build` compil+� correctamente e incluy+� la ruta `/inspecciones`.
+  `npm run build` compil+ correctamente e incluy+ la ruta `/inspecciones`.
 
-  `npm run verify` termin+� con `Verificaci+�n t+�cnica: pass` y gener+� `reports/verification.json`.
+  `npm run verify` termin+ con `Verificaci+n t+cnica: pass` y gener+ `reports/verification.json`.
 
-  Tambi+�n comprob+� manualmente `http://localhost:3000/inspecciones`: el HTML inicial contiene `Cargando listado CSR`, contiene el bot+�n `Refrescar datos` y no contiene `Laboratorio de Redes`, lo que confirma que la lista no llega prerenderizada como SSR.
+  Tambi+n comprob+ manualmente `http://localhost:3000/inspecciones`: el HTML inicial contiene `Cargando listado CSR`, contiene el bot+n `Refrescar datos` y no contiene `Laboratorio de Redes`, lo que confirma que la lista no llega prerenderizada como SSR.
 
-- Limitaci+�n o fallo diagnosticado:
+- Limitaci+n o fallo diagnosticado:
 
-  Mi tarjeta individual solo cubre la ruta CSR del listado. No implement+� `src/app/inspecciones/[id]/page.tsx`, `src/components/loading-state.tsx`, `docs/rendering-decision.md` ni `tests/rendering.spec.ts`, porque esos entregables corresponden al trabajo de otros integrantes o a la integraci+�n del equipo.
+  Mi tarjeta individual solo cubre la ruta CSR del listado. No implement+ `src/app/inspecciones/[id]/page.tsx`, `src/components/loading-state.tsx`, `docs/rendering-decision.md` ni `tests/rendering.spec.ts`, porque esos entregables corresponden al trabajo de otros integrantes o a la integraci+n del equipo.
 
-- Cambio que podr+�a defender o modificar en vivo:
+- Cambio que podr+a defender o modificar en vivo:
 
-  Puedo explicar c+�mo se demuestran los tres estados: `loading` aparece antes de cargar los datos, `ready` muestra las inspecciones sint+�ticas y `error` se activa con el bot+�n `Simular error` sin romper la ruta.
+  Puedo explicar c+mo se demuestran los tres estados: `loading` aparece antes de cargar los datos, `ready` muestra las inspecciones sint+ticas y `error` se activa con el bot+n `Simular error` sin romper la ruta.
 
-- Uso declarado de IA (herramienta, prop+�sito, validaci+�n):
+- Uso declarado de IA (herramienta, prop+sito, validaci+n):
 
-  Utilic+� ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+� manualmente el comportamiento de la ruta y ejecut+� pruebas, build y verificaci+�n antes de preparar el commit.
+  Utilic+ ChatGPT/Codex para interpretar el kit de Semana 04, contrastarlo con mi PDF individual, implementar la ruta CSR y organizar la evidencia. Valid+ manualmente el comportamiento de la ruta y ejecut+ pruebas, build y verificaci+n antes de preparar el commit.
 
   ### Registro de Evidencia — Actividad 05
 
@@ -606,3 +606,22 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
   Utilicé ChatGPT/Codex como apoyo para interpretar las instrucciones de Semana 05, revisar el PDF de asignación, diseñar la política determinista, redactar la documentación y preparar pruebas automatizadas. Validé personalmente los cambios ejecutando instalación, pruebas, build y verificación local antes de preparar la entrega.
+
+## Registro de Evidencia — Actividad 06 (Semana 6 - Felix)
+
+- **Estudiante:** Felix
+- **Rama de trabajo:** `feature/semana-06-felix`
+- **Commit SHA evaluado:** `340dc8f`
+- **Decisión técnica que puedo explicar:**
+  Implementación de capacidades del dispositivo (`camera.ts` y `geolocation.ts`) bajo demanda del usuario, aplicando permisos mínimos (`video: { facingMode: 'environment' }` en cámara y `enableHighAccuracy: false` en geolocalización), deteniendo los `MediaStreamTrack` inmediatamente después de la captura para evitar consumo inútil de batería/recursos, y utilizando un patrón de respuesta unificado `{ success, dataUrl/coords, error, errorCode, isFallback }` que maneja degradación elegante y fallbacks sin interrumpir la experiencia de usuario.
+- **Prueba que ejecuté y resultado:**
+  Ejecución de suite automatizada `npm test` incluyendo `tests/capabilities.spec.ts`.
+  Resultado: 9/9 suites PASS (cubriendo capacidad disponible, rechazo de permisos `NotAllowedError` / `PERMISSION_DENIED`, y ausencia de API / fallback activado).
+- **Limitación o fallo diagnosticado:**
+  En entornos de navegador con permisos denegados o sin hardware de cámara/GPS nativo (o ejecuciones en servidor/headless), las llamadas nativas fallan. Se diagnosticó y manejó mediante capturas con `try/catch` y mapeo de errores, activando una imagen/coordenada sintética de fallback con `isFallback: true`.
+- **Cambio que podría defender o modificar en vivo:**
+  La estructura de retorno tipada de `CameraResult` y `GeolocationResult`, el método de liberación de recursos mediante `track.stop()`, y la lógica del fallback sintético.
+- **Uso declarado de IA (herramienta, propósito, validación):**
+  - Herramienta: Antigravity AI
+  - Propósito: Estructurar la lógica modular de `camera.ts` y `geolocation.ts` y diseñar la suite de pruebas unitarias.
+  - Validación: Verificación manual mediante ejecución local de `npm test` (PASS) e inspección de código.
