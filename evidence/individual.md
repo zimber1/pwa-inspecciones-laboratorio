@@ -606,3 +606,69 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 - Uso de IA: herramienta, propósito, partes influenciadas y validación propia:
 
   Utilicé ChatGPT/Codex como apoyo para interpretar las instrucciones de Semana 05, revisar el PDF de asignación, diseñar la política determinista, redactar la documentación y preparar pruebas automatizadas. Validé personalmente los cambios ejecutando instalación, pruebas, build y verificación local antes de preparar la entrega.
+
+## Semana 06 - Cesar Gaspar Pacheco (3522110305)
+
+- Grupo:
+
+  `10B`
+
+- Commit SHA de implementacion:
+
+  `3eaf66925c218652565f212fb9f4bf3cfcc2aa36`
+
+- Mi contribucion concreta:
+
+  Implemente mi parte individual de Semana 06 en `src/lib/notifications/client.ts`: cliente de notificaciones con solicitud de permiso bajo accion del usuario, manejo de permiso concedido, permiso denegado, API no disponible, errores y fallback funcional. Tambien agregue `tests/capabilities.spec.ts` para validar estos escenarios y documente la decision en `docs/capabilities.md`.
+
+- Decision tecnica que puedo explicar:
+
+  La solicitud de permiso requiere `userInitiated: true`. Si no existe una accion explicita del usuario, no se llama `Notification.requestPermission()` y se devuelve un resultado controlado con fallback. Tome esta decision para respetar permisos minimos y evitar que la PWA solicite capacidades del navegador durante carga automatica o ejecucion no solicitada.
+
+- Prueba que ejecute y resultado:
+
+  `npx tsx tests/capabilities.spec.ts`
+
+  Resultado: `capabilities.spec.ts: PASS`.
+
+  `npm test`
+
+  Resultado: la suite completa termino correctamente, incluyendo `capabilities.spec.ts: PASS`.
+
+  `npm run build`
+
+  Resultado: compilacion correcta de Next.js.
+
+  `npm run verify`
+
+  Resultado: `Verificacion tecnica: pass` y se genero `reports/verification.json`.
+
+  `npm ci`
+
+  Resultado: instalacion correcta con aviso de version porque esta terminal usa Node.js `v20.10.0` y el proyecto declara `>=20.19.0`. Tambien reporto vulnerabilidades transitivas; no ejecute arreglos automaticos porque podrian cambiar dependencias fuera del alcance individual.
+
+  `make verify`
+
+  Resultado: no pudo ejecutarse porque `make` no esta instalado en esta terminal. El equivalente exacto del Makefile, `npm run verify`, si fue ejecutado y aprobado.
+
+  `bash public-tests/check.sh`
+
+  Resultado: no ejecuto sus validaciones porque el archivo compartido actual tiene finales de linea Windows y `bash` se detuvo en `set -euo pipefail`. No modifique ese script porque no forma parte de mi asignacion individual.
+
+- Que verifica y que no verifica:
+
+  `tests/capabilities.spec.ts` verifica API no disponible, solicitud bloqueada sin accion del usuario, permiso concedido, permiso denegado, error al pedir permiso, error al crear notificacion y fallback funcional.
+
+  No verifica envio push remoto, servidor de notificaciones, camara ni geolocalizacion. Esos puntos quedan fuera de mi PDF individual, que asigna `src/lib/notifications/client.ts`.
+
+- Limitacion o fallo diagnosticado:
+
+  La implementacion cubre notificaciones locales del navegador y fallback dentro de la aplicacion, pero no integra un servicio remoto de push ni una UI final para disparar el flujo desde pantalla. Tambien observe que el check publico completo de Semana 06 espera archivos de camara y geolocalizacion del equipo, por lo que esa validacion depende de la integracion de los demas integrantes.
+
+- Cambio que podria defender o modificar en vivo:
+
+  Puedo explicar el flujo de `requestNotificationPermission`, `showNotification` y `notifyInspectionChange`, asi como modificar los mensajes de fallback o la regla que impide pedir permisos sin accion del usuario.
+
+- Uso declarado de IA:
+
+  Utilice ChatGPT/Codex como apoyo para interpretar el `SKILL.md`, el PDF individual y el kit de Semana 06, disenar el cliente de notificaciones, redactar la prueba automatizada y organizar esta evidencia. Valide personalmente los cambios ejecutando pruebas, build e instalacion local antes de preparar la entrega.
