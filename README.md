@@ -615,6 +615,35 @@ La cola y la política de conflictos constituyen la base técnica para una
 sincronización posterior con un servicio remoto, pero esta semana no incorpora
 una integración institucional real.
 
+## Semana 6 — Notificaciones
+
+La parte individual de Cesar Gaspar Pacheco implementa el cliente de
+notificaciones en:
+
+```text
+src/lib/notifications/client.ts
+```
+
+La implementacion solicita permiso solo desde una accion del usuario, contempla
+permiso concedido, permiso denegado, API no disponible, errores y fallback
+funcional dentro de la aplicacion.
+
+La decision y limites se documentan en:
+
+```text
+docs/capabilities.md
+```
+
+La prueba especifica de notificaciones se integra a la suite mediante:
+
+```text
+tests/capabilities.spec.ts
+```
+
+Esta rama no implementa `src/lib/device/camera.ts` ni
+`src/lib/device/geolocation.ts` porque el PDF individual de Cesar asigna
+unicamente `src/lib/notifications/client.ts`.
+
 ## Entrega
 
 Antes de entregar:
