@@ -607,6 +607,26 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
   Utilicé ChatGPT/Codex como apoyo para interpretar las instrucciones de Semana 05, revisar el PDF de asignación, diseñar la política determinista, redactar la documentación y preparar pruebas automatizadas. Validé personalmente los cambios ejecutando instalación, pruebas, build y verificación local antes de preparar la entrega.
 
+## Registro de Evidencia — Actividad 06 (Semana 6 - Felix)
+
+- **Estudiante:** Felix
+- **Rama de trabajo:** `feature/semana-06-felix`
+- **Commit SHA evaluado:** `340dc8f`
+- **Decisión técnica que puedo explicar:**
+  Implementación de capacidades del dispositivo (`camera.ts` y `geolocation.ts`) bajo demanda del usuario, aplicando permisos mínimos (`video: { facingMode: 'environment' }` en cámara y `enableHighAccuracy: false` en geolocalización), deteniendo los `MediaStreamTrack` inmediatamente después de la captura para evitar consumo inútil de batería/recursos, y utilizando un patrón de respuesta unificado `{ success, dataUrl/coords, error, errorCode, isFallback }` que maneja degradación elegante y fallbacks sin interrumpir la experiencia de usuario.
+- **Prueba que ejecuté y resultado:**
+  Ejecución de suite automatizada `npm test` incluyendo `tests/capabilities.spec.ts`.
+  Resultado: 9/9 suites PASS (cubriendo capacidad disponible, rechazo de permisos `NotAllowedError` / `PERMISSION_DENIED`, y ausencia de API / fallback activado).
+- **Limitación o fallo diagnosticado:**
+  En entornos de navegador con permisos denegados o sin hardware de cámara/GPS nativo (o ejecuciones en servidor/headless), las llamadas nativas fallan. Se diagnosticó y manejó mediante capturas con `try/catch` y mapeo de errores, activando una imagen/coordenada sintética de fallback con `isFallback: true`.
+- **Cambio que podría defender o modificar en vivo:**
+  La estructura de retorno tipada de `CameraResult` y `GeolocationResult`, el método de liberación de recursos mediante `track.stop()`, y la lógica del fallback sintético.
+- **Uso declarado de IA (herramienta, propósito, validación):**
+  - Herramienta: Antigravity AI
+  - Propósito: Estructurar la lógica modular de `camera.ts` y `geolocation.ts` y diseñar la suite de pruebas unitarias.
+  - Validación: Verificación manual mediante ejecución local de `npm test` (PASS) e inspección de código.
+
+
 ## Semana 06 - Cesar Gaspar Pacheco (3522110305)
 
 - Grupo:
@@ -672,3 +692,22 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 - Uso declarado de IA:
 
   Utilice ChatGPT/Codex como apoyo para interpretar el `SKILL.md`, el PDF individual y el kit de Semana 06, disenar el cliente de notificaciones, redactar la prueba automatizada y organizar esta evidencia. Valide personalmente los cambios ejecutando pruebas, build e instalacion local antes de preparar la entrega.
+
+
+
+## Registro de Evidencia — Actividad 06 (Semana 6 - Claudia)
+
+- **Estudiante:** Claudia Espíndola López
+- **Rama de trabajo:** `feature/semana-06-claudia-integracion`
+- **Contribución de integración:**
+  Integré las capacidades del dispositivo de Félix (`camera.ts` y `geolocation.ts`) con el cliente de notificaciones de César. Incorporé pruebas específicas para cámara y geolocalización en `tests/device-capabilities.spec.ts` y actualicé el script de pruebas de `package.json` para incluirlas. También integré la documentación de las tres capacidades en `docs/capabilities.md`.
+- **Pruebas ejecutadas y resultados:**
+  - `npx tsx tests/capabilities.spec.ts`: PASS.
+  - `npx tsx tests/device-capabilities.spec.ts`: PASS.
+  - `npm test`: las 10 suites reportaron PASS.
+- **Decisión técnica que puedo explicar:**
+  Mantener separadas las pruebas de notificaciones y las de cámara/geolocalización, e incorporarlas al flujo general de pruebas para detectar regresiones durante la integración.
+- **Limitación o riesgo identificado:**
+  Las capacidades nativas dependen de las API del navegador, los permisos y la disponibilidad del dispositivo. Las pruebas automatizadas validan los escenarios simulados, pero no sustituyen las comprobaciones en un dispositivo físico.
+- **Uso declarado de IA (herramienta, propósito, validación):**
+  Utilicé ChatGPT como apoyo para revisar la integración de ramas, organizar las pruebas y redactar la evidencia. Validé los resultados ejecutando las suites localmente. El build y la verificación general quedan pendientes de ejecución en esta rama.
