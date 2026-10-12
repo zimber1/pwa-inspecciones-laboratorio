@@ -239,6 +239,76 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
   Utilicé ChatGPT/Codex como apoyo para revisar la integración de Semana 05, organizar la documentación, revisar la evidencia y estructurar las verificaciones. Validé personalmente los cambios ejecutando `npm test`, `npm run build` y `npm run verify`, y revisé los resultados obtenidos antes de preparar la entrega.
 
+  ## Registro de Evidencia — Actividad 06 (Semana 6 - Claudia Espíndola López)
+
+- **Estudiante:** Claudia Espíndola López
+- **Rama de trabajo:** `feature/semana-06-claudia-integracion`
+- **Commit SHA evaluado:** `44463ea6951ac8b2a4308601b5f684c48648edf6`
+
+- **Mi contribución concreta y enlace a archivo, commit anterior o revisión:**
+
+  Realicé la integración de las capacidades implementadas por los integrantes del equipo para la Semana 6. Incorporé la cámara y la geolocalización desarrolladas por Félix mediante `src/lib/device/camera.ts` y `src/lib/device/geolocation.ts`, y conservé el cliente de notificaciones implementado por César en `src/lib/notifications/client.ts`.
+
+  Agregué `tests/device-capabilities.spec.ts` para comprobar los escenarios de cámara y geolocalización, actualicé el script de pruebas de `package.json` e integré la documentación de las tres capacidades en `docs/capabilities.md`. También incorporé las evidencias individuales correspondientes en `evidence/individual.md`.
+
+  Mi contribución quedó registrada en el commit `44463ea`, publicado en la rama `feature/semana-06-claudia-integracion` y posteriormente integrado en `develop` mediante el Pull Request #16.
+
+- **Decisión técnica que puedo explicar y justificar:**
+
+  Mantuve separadas las pruebas de notificaciones y las de cámara y geolocalización para facilitar el diagnóstico de errores y comprobar cada capacidad de manera independiente. Después incorporé ambas suites al comando general `npm test`, de forma que la integración pudiera validarse junto con las pruebas existentes del proyecto.
+
+  También conservé el enfoque de mejora progresiva: las capacidades opcionales del navegador deben manejar los permisos denegados, la ausencia de API y los errores sin impedir que continúe el flujo principal de la aplicación.
+
+- **Comandos o pruebas que ejecuté:**
+
+  `npx tsx tests/capabilities.spec.ts`
+
+  `npx tsx tests/device-capabilities.spec.ts`
+
+  `npm test`
+
+  `npm run build`
+
+  `npm run verify`
+
+- **Resultado real que observé:**
+
+  Las pruebas individuales de notificaciones y de cámara/geolocalización terminaron con resultado `PASS`.
+
+  El comando `npm test` terminó correctamente y las 10 suites incluidas en el script reportaron `PASS`.
+
+  El comando `npm run build` compiló correctamente la aplicación Next.js, completó la comprobación de tipos y linting, y generó las páginas correspondientes.
+
+  El comando `npm run verify` terminó con el mensaje `Verificación técnica: pass` y generó el reporte `reports/verification.json`.
+
+  La revisión académica aparece como pendiente en el reporte de verificación, por lo que no afirmo que la entrega ya haya sido aprobada académicamente.
+
+- **Qué verifica y qué no verifica esta validación:**
+
+  Las pruebas automatizadas comprueban los escenarios definidos para las notificaciones, la cámara y la geolocalización, además de ejecutar las pruebas existentes de la PWA. La compilación y la verificación general permiten comprobar que los cambios integrados no introducen errores detectados por esos controles.
+
+  Estas pruebas no sustituyen la comprobación manual en dispositivos físicos con distintas cámaras, permisos, sensores y navegadores. Tampoco demuestran por sí solas que todas las capacidades funcionen en cualquier dispositivo o entorno de ejecución.
+
+- **Limitación, dificultad o riesgo que identifiqué:**
+
+  La integración requería combinar contribuciones realizadas en ramas diferentes y mantener las pruebas y la documentación coherentes con el código final. Por ello, recuperé e incorporé las capacidades del dispositivo, conservé la implementación de notificaciones y validé el conjunto mediante las pruebas automatizadas, el build y la verificación técnica.
+
+  Las capacidades nativas siguen dependiendo de las API disponibles, los permisos concedidos por el usuario y el hardware del dispositivo. Los fallbacks permiten manejar escenarios de indisponibilidad, pero no reemplazan una prueba física de cada capacidad.
+
+- **Cambio que podría defender o modificar en vivo:**
+
+  Puedo explicar cómo se incorporan las pruebas de cámara y geolocalización al comando general `npm test`, cómo se organiza la documentación conjunta en `docs/capabilities.md` y cómo se verifica la integración mediante `npm run build` y `npm run verify`.
+
+  También puedo explicar la diferencia entre la implementación individual de cada capacidad y el trabajo de integración que reúne los módulos, las pruebas y la documentación en una misma rama.
+
+- **Uso declarado de IA: herramienta, propósito, partes influenciadas y validación propia:**
+
+  Utilicé ChatGPT como apoyo para revisar la integración de ramas, analizar los conflictos, organizar las pruebas, actualizar la documentación y estructurar esta evidencia individual.
+
+  La validación propia consistió en ejecutar las pruebas automatizadas, comprobar el resultado del build, ejecutar la verificación general y revisar el estado de Git antes de crear y publicar el commit de integración.
+
+  La asistencia de IA se utilizó como apoyo al análisis y la documentación; los resultados declarados corresponden a los comandos ejecutados localmente.
+
 ## Integrante: Felix Ivan Garcia Flores (3523110172)
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión:
@@ -426,6 +496,32 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 - **Uso declarado de IA (herramienta, propósito, validación):**
 
   Utilicé Antigravity (modelo Gemini) como asistente de programación para definir el esquema de datos TypeScript, estructurar la clase de cola de sincronización de manera idempotente, preparar la suite de pruebas unitarias y redactar esta evidencia técnica. Validé personalmente la compilación, la ejecución de las 7 pruebas unitarias y el build de producción antes de confirmar cada commit atómico.
+## Registro de Evidencia — Actividad 06 (Semana 6 - Felix)
+
+- **Estudiante:** Felix
+
+- **Rama de trabajo:** `feature/semana-06-felix`
+
+- **Commit SHA evaluado:** `340dc8f`
+
+- **Decisión técnica que puedo explicar:**
+
+  Implementación de capacidades del dispositivo (`camera.ts` y `geolocation.ts`) bajo demanda del usuario, aplicando permisos mínimos (`video: { facingMode: 'environment' }` en cámara y `enableHighAccuracy: false` en geolocalización), deteniendo los `MediaStreamTrack` inmediatamente después de la captura para evitar consumo inútil de batería/recursos, y utilizando un patrón de respuesta unificado `{ success, dataUrl/coords, error, errorCode, isFallback }` que maneja degradación elegante y fallbacks sin interrumpir la experiencia de usuario.
+
+- **Prueba que ejecuté y resultado:**
+  Ejecución de suite automatizada `npm test` incluyendo `tests/capabilities.spec.ts`.
+  Resultado: 9/9 suites PASS (cubriendo capacidad disponible, rechazo de permisos `NotAllowedError` / `PERMISSION_DENIED`, y ausencia de API / fallback activado).
+
+- **Limitación o fallo diagnosticado:**
+  En entornos de navegador con permisos denegados o sin hardware de cámara/GPS nativo (o ejecuciones en servidor/headless), las llamadas nativas fallan. Se diagnosticó y manejó mediante capturas con `try/catch` y mapeo de errores, activando una imagen/coordenada sintética de fallback con `isFallback: true`.
+
+- **Cambio que podría defender o modificar en vivo:**
+  La estructura de retorno tipada de `CameraResult` y `GeolocationResult`, el método de liberación de recursos mediante `track.stop()`, y la lógica del fallback sintético.
+
+- **Uso declarado de IA (herramienta, propósito, validación):**
+  - Herramienta: Antigravity AI
+  - Propósito: Estructurar la lógica modular de `camera.ts` y `geolocation.ts` y diseñar la suite de pruebas unitarias.
+  - Validación: Verificación manual mediante ejecución local de `npm test` (PASS) e inspección de código.
 
 ## Integrante: Cesar Gaspar Pacheco (3522110305)
 
@@ -607,26 +703,6 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
   Utilicé ChatGPT/Codex como apoyo para interpretar las instrucciones de Semana 05, revisar el PDF de asignación, diseñar la política determinista, redactar la documentación y preparar pruebas automatizadas. Validé personalmente los cambios ejecutando instalación, pruebas, build y verificación local antes de preparar la entrega.
 
-## Registro de Evidencia — Actividad 06 (Semana 6 - Felix)
-
-- **Estudiante:** Felix
-- **Rama de trabajo:** `feature/semana-06-felix`
-- **Commit SHA evaluado:** `340dc8f`
-- **Decisión técnica que puedo explicar:**
-  Implementación de capacidades del dispositivo (`camera.ts` y `geolocation.ts`) bajo demanda del usuario, aplicando permisos mínimos (`video: { facingMode: 'environment' }` en cámara y `enableHighAccuracy: false` en geolocalización), deteniendo los `MediaStreamTrack` inmediatamente después de la captura para evitar consumo inútil de batería/recursos, y utilizando un patrón de respuesta unificado `{ success, dataUrl/coords, error, errorCode, isFallback }` que maneja degradación elegante y fallbacks sin interrumpir la experiencia de usuario.
-- **Prueba que ejecuté y resultado:**
-  Ejecución de suite automatizada `npm test` incluyendo `tests/capabilities.spec.ts`.
-  Resultado: 9/9 suites PASS (cubriendo capacidad disponible, rechazo de permisos `NotAllowedError` / `PERMISSION_DENIED`, y ausencia de API / fallback activado).
-- **Limitación o fallo diagnosticado:**
-  En entornos de navegador con permisos denegados o sin hardware de cámara/GPS nativo (o ejecuciones en servidor/headless), las llamadas nativas fallan. Se diagnosticó y manejó mediante capturas con `try/catch` y mapeo de errores, activando una imagen/coordenada sintética de fallback con `isFallback: true`.
-- **Cambio que podría defender o modificar en vivo:**
-  La estructura de retorno tipada de `CameraResult` y `GeolocationResult`, el método de liberación de recursos mediante `track.stop()`, y la lógica del fallback sintético.
-- **Uso declarado de IA (herramienta, propósito, validación):**
-  - Herramienta: Antigravity AI
-  - Propósito: Estructurar la lógica modular de `camera.ts` y `geolocation.ts` y diseñar la suite de pruebas unitarias.
-  - Validación: Verificación manual mediante ejecución local de `npm test` (PASS) e inspección de código.
-
-
 ## Semana 06 - Cesar Gaspar Pacheco (3522110305)
 
 - Grupo:
@@ -695,19 +771,3 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
 
 
-## Registro de Evidencia — Actividad 06 (Semana 6 - Claudia)
-
-- **Estudiante:** Claudia Espíndola López
-- **Rama de trabajo:** `feature/semana-06-claudia-integracion`
-- **Contribución de integración:**
-  Integré las capacidades del dispositivo de Félix (`camera.ts` y `geolocation.ts`) con el cliente de notificaciones de César. Incorporé pruebas específicas para cámara y geolocalización en `tests/device-capabilities.spec.ts` y actualicé el script de pruebas de `package.json` para incluirlas. También integré la documentación de las tres capacidades en `docs/capabilities.md`.
-- **Pruebas ejecutadas y resultados:**
-  - `npx tsx tests/capabilities.spec.ts`: PASS.
-  - `npx tsx tests/device-capabilities.spec.ts`: PASS.
-  - `npm test`: las 10 suites reportaron PASS.
-- **Decisión técnica que puedo explicar:**
-  Mantener separadas las pruebas de notificaciones y las de cámara/geolocalización, e incorporarlas al flujo general de pruebas para detectar regresiones durante la integración.
-- **Limitación o riesgo identificado:**
-  Las capacidades nativas dependen de las API del navegador, los permisos y la disponibilidad del dispositivo. Las pruebas automatizadas validan los escenarios simulados, pero no sustituyen las comprobaciones en un dispositivo físico.
-- **Uso declarado de IA (herramienta, propósito, validación):**
-  Utilicé ChatGPT como apoyo para revisar la integración de ramas, organizar las pruebas y redactar la evidencia. Validé los resultados ejecutando las suites localmente. El build y la verificación general quedan pendientes de ejecución en esta rama.
