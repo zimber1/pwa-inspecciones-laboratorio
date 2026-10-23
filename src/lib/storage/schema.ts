@@ -52,3 +52,83 @@ export type SyncStorageSchema = {
   version: number;
   operations: SyncOperation[];
 };
+
+export type InspectionValidationResult = {
+  valid: boolean;
+  errors: string[];
+};
+
+/**
+ * Valida que un objeto de inspección local cumpla con las reglas de dominio
+ * antes de registrarse o encolarse para sincronización.
+ */
+export function validateLocalInspection(
+  input: unknown
+): InspectionValidationResult {
+  const errors: string[] = [];
+
+  if (!input || typeof input !== "object") {
+    return {
+      valid: false,
+      errors: ["inspection payload must be a non-null object"]
+    };
+  }
+
+  const candidate = input as Partial<LocalInspection>;
+
+  if (typeof candidate.id !== "string" || !candidate.id.trim()) {
+    errors.push("id is required");
+  }
+
+  if (typeof candidate.location !== "string" || !candidate.location.trim()) {
+    errors.push("location is required");
+  }
+
+  if (
+    typeof candidate.date !== "string" ||
+    !candidate.date.trim() ||
+    Number.isNaN(Date.parse(candidate.date))
+  ) {
+    errors.push("date must be a valid ISO date string");
+  }
+
+  if (typeof candidate.inspector !== "string" || !candidate.inspector.trim()) {
+    errors.push("inspector is required");
+  }
+
+  if (candidate.status !== "ok" && candidate.status !== "attention") {
+    errors.push("status must be 'ok' or 'attention'");
+  }
+
+  if (
+    typeof candidate.statusLabel !== "string" ||
+    !candidate.statusLabel.trim()
+  ) {
+    errors.push("statusLabel is required");
+  }
+
+  if (
+    typeof candidate.findings !== "number" ||
+    !Number.isInteger(candidate.findings) ||
+    candidate.findings < 0
+  ) {
+    errors.push("findings must be a non-negative integer");
+  }
+
+  if (typeof candidate.summary !== "string" || !candidate.summary.trim()) {
+    errors.push("summary is required");
+  }
+
+  if (
+    typeof candidate.version !== "number" ||
+    !Number.isFinite(candidate.version) ||
+    candidate.version < 1
+  ) {
+    errors.push("version must be a positive number");
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
