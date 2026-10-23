@@ -10,7 +10,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node tests/starter.spec.mjs && tsx tests/manifest.spec.ts && tsx tests/register-service-worker.spec.ts && tsx tests/service-worker.spec.ts && tsx tests/offline.spec.ts && tsx tests/rendering.spec.ts && tsx tests/queue.spec.ts && tsx tests/sync.spec.ts && tsx tests/capabilities.spec.ts && tsx tests/device-capabilities.spec.ts",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test:unit": "tsx tests/unit/validation.spec.ts && tsx tests/unit/idempotency.spec.ts",
+    "test:coverage": "node -e \"const fs=require('node:fs');fs.mkdirSync('coverage',{recursive:true});fs.mkdirSync('test-results',{recursive:true});\" && node --no-warnings --experimental-test-coverage --import tsx --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info --test-reporter=junit --test-reporter-destination=test-results/junit.xml tests/starter.spec.mjs tests/manifest.spec.ts tests/register-service-worker.spec.ts tests/service-worker.spec.ts tests/offline.spec.ts tests/rendering.spec.ts tests/queue.spec.ts tests/sync.spec.ts tests/capabilities.spec.ts tests/device-capabilities.spec.ts tests/unit/validation.spec.ts tests/unit/idempotency.spec.ts",
+    "test": "node tests/starter.spec.mjs && tsx tests/manifest.spec.ts && tsx tests/register-service-worker.spec.ts && tsx tests/service-worker.spec.ts && tsx tests/offline.spec.ts && tsx tests/rendering.spec.ts && tsx tests/queue.spec.ts && tsx tests/sync.spec.ts && tsx tests/capabilities.spec.ts && tsx tests/device-capabilities.spec.ts && tsx tests/unit/validation.spec.ts && tsx tests/unit/idempotency.spec.ts",
     "verify": "node scripts/verify.mjs"
   },
   "dependencies": {

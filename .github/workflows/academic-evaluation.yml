@@ -1,0 +1,87 @@
+name: Academic Evaluation — Semana 08 CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.6"
+          cache: npm
+
+      - name: AC-01 - Instalación limpia y reproducible
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Comprobación de tipos y código (TypeScript)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run typecheck
+
+      - name: AC-02 / AC-03 - Pruebas unitarias, regresión y generación de cobertura
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p coverage test-results reports
+          npm run test:coverage | tee coverage/coverage-summary.txt test-results/unit-output.txt
+
+      - name: AC-02 - Pruebas de integración (cuando estén presentes en el repositorio)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "tests/integration" ] && find tests/integration -type f \( -name "*.spec.ts" -o -name "*.spec.mjs" -o -name "*.test.ts" \) -print -quit | grep -q .; then
+            for test_file in $(find tests/integration -type f \( -name "*.spec.ts" -o -name "*.spec.mjs" -o -name "*.test.ts" \) | sort); do
+              echo "Ejecutando $test_file..."
+              npx tsx "$test_file" | tee -a test-results/integration-output.txt
+            done
+          else
+            echo "Sin pruebas en tests/integration/ en esta rama."
+          fi
+
+      - name: AC-01 - Compilación de producción y verificación técnica
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build
+          npm run verify
+
+      - name: AC-02 - Pruebas E2E (cuando estén presentes en el repositorio)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "tests/e2e" ] && find tests/e2e -type f \( -name "*.spec.ts" -o -name "*.spec.mjs" -o -name "*.test.ts" \) -print -quit | grep -q .; then
+            for test_file in $(find tests/e2e -type f \( -name "*.spec.ts" -o -name "*.spec.mjs" -o -name "*.test.ts" \) | sort); do
+              echo "Ejecutando $test_file..."
+              npx tsx "$test_file" | tee -a test-results/e2e-output.txt
+            done
+          else
+            echo "Sin pruebas en tests/e2e/ en esta rama."
+          fi
+
+      - name: AC-03 - Publicar reportes de pruebas y cobertura como artefactos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academic-evaluation-reports
+          if-no-files-found: warn
+          path: |
+            coverage/
+            test-results/
+            reports/verification.json
