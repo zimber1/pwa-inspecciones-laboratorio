@@ -644,6 +644,24 @@ Esta rama no implementa `src/lib/device/camera.ts` ni
 `src/lib/device/geolocation.ts` porque el PDF individual de Cesar asigna
 unicamente `src/lib/notifications/client.ts`.
 
+## Semana 08 - Integracion de Cesar
+
+Las pruebas de `tests/integration/queue.spec.ts` integran la cola real con
+almacenamiento y respuestas remotas simuladas: persistencia tras reconstruir
+la instancia, fallos, confirmacion y reintentos sin duplicados. Los casos usan
+datos sinteticos y restauran el entorno despues de cada prueba.
+
+```sh
+npm run test:integration
+```
+
+Tambien se ejecutan desde `npm test` y `npm run verify` (equivalente exacto de
+`make verify`). Usar Node >=20.19.0 e instalar con `npm ci`.
+Preparacion, escenarios, generacion del reporte TAP y limites:
+[guia de integracion](tests/integration/README.md).
+La recarga se simula a nivel de almacenamiento; los E2E de la interfaz y el
+workflow completo de Semana 08 corresponden a la integracion del equipo.
+
 ## Entrega
 
 Antes de entregar:
