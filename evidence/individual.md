@@ -771,6 +771,83 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
 
 
+
+## Semana 08 - Cesar Gaspar Pacheco (3522110305) - Pruebas de integracion
+
+- Grupo: `10B`. Trabajo individual limitado a la asignacion del PDF de Cesar.
+- Rama: `feature/semana-08-cesar-integration`, creada desde `origin/develop` (`90f6ecd459739a7b4fa735b77710d6962f796518`). El PDF menciona `devop`; el usuario confirmo `develop` como destino del PR. El SHA final comun del equipo se entrega en Classroom despues de la integracion, sin agregar un commit para escribir su propio hash.
+- Contribucion: [pruebas ejecutables](../tests/integration/queue.spec.ts) y [fixtures aislados](../tests/integration/fixtures.ts). Se conserva la evidencia de semanas anteriores y de los demas integrantes.
+- Decision y motivo: integrar la clase real `SyncQueue` con su serializacion y recuperacion, simulando solo `window.localStorage` y el handler remoto. Se usan `node:test`, `node:assert/strict` y `tsx`, ya disponibles. Se agrega `test:integration` y se invoca desde `npm test` para que un fallo bloquee la verificacion habitual. No se modifica codigo de la aplicacion ni dependencias.
+
+### Diagnostico y precondiciones
+
+Comprobacion local del 24 de octubre de 2026. La cola real persiste el payload de la inspeccion dentro de la operacion, recupera estados `pending` y `failed`, y conserva `processed` sin volver a enviarlo. La interfaz actual no consume esta cola. No hay cliente HTTP de sincronizacion: `processQueue` recibe un handler que devuelve `true`/`false` o lanza un error.
+
+Se ejecuto `npm ci` el 24 de octubre de 2026: codigo 0, 31 paquetes instalados desde el lockfile sin modificarlo. npm uso el Node predeterminado v20.10.0 y advirtio que el proyecto requiere >=20.19.0. Reporto tres vulnerabilidades transitivas; no se aplicaron actualizaciones automaticas fuera del alcance individual.
+
+El proyecto requiere Node >=20.19.0 y npm >=10.0.0. El Node predeterminado de esta maquina es v20.10.0. El reporte TAP y la comprobacion explicita de tipos se ejecutaron con Node v24.22.1, invocado por su ruta completa. El verificador se inicio con ese mismo runtime; los subprocesos npm.cmd pueden usar el Node predeterminado instalado junto a npm. No se cambio la configuracion global. Para comprobar el runtime disponible:
+
+```powershell
+& 'C:\Users\USER\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe' --version
+```
+
+En otro equipo basta con usar una version de Node compatible; esa ruta local no es un requisito del proyecto. No se necesita servidor, cuenta, red real ni dispositivo fisico para ejecutar estos casos.
+
+### Ejecucion reproducible
+
+Desde la raiz del repositorio:
+
+```sh
+npm run test:integration
+npm test
+npm run verify
+node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --esModuleInterop --moduleResolution bundler --module esnext --target es2020 tests/integration/fixtures.ts tests/integration/queue.spec.ts
+```
+
+La integracion se ejecuta con el primer comando y tambien desde `npm test`. `npm run verify` ejecuta todas esas pruebas y el build; es el equivalente exacto de `make verify`. Se conserva la suite compartida y no se modifican workflows. El reporte real de esta capa se conserva en [results.tap](../tests/integration/results.tap); [README de integracion](../tests/integration/README.md) documenta como regenerarlo.
+
+### Preparacion, acciones y resultados por escenario
+
+Cada caso comienza con un almacen vacio y la misma inspeccion sintetica nueva. Se restaura el descriptor original de `window` y se vacia el almacen mediante `finally`, incluso si falla una asercion. Los casos son secuenciales para no compartir el global simulado de forma concurrente.
+
+| Escenario en queue.spec.ts | Preparacion y accion | Resultado esperado y observado |
+| --- | --- | --- |
+| Guardar offline y recuperar el payload completo al recargar | `onLine: false`; encolar, reemplazar `window` conservando las cadenas del almacen y crear otra `SyncQueue` | Se recupera una unica operacion `pending`, con payload completo, identidad y metadatos iguales; los objetos recuperados son distintos de los originales y `retryCount` sigue en 0. PASS. |
+| Respuesta fallida | Handler devuelve `false`; procesar y reconstruir desde almacenamiento | Cero confirmaciones, un fallo, ninguna inspeccion remota, estado `failed`, contador 1, error y fecha registrados; payload e identidad intactos y disponible para reintento. PASS. |
+| Excepcion de transporte | Handler lanza `Error("Fallo de red sintetico")`; procesar y reconstruir | Se conserva el mismo estado reintentable y el mensaje exacto del error, sin perder la inspeccion. PASS. |
+| Respuesta exitosa | Handler devuelve `true`; procesar y reconstruir | Una confirmacion y un registro remoto sintetico; se conserva una operacion `processed`, contador 1, sin error ni pendientes. PASS. |
+| Reintento por ID | Fallo, recarga, reencolado con mismo ID y distinta clave, exito y otra recarga | Una sola operacion; ambos intentos conservan ID, clave original, fecha y payload. Contador 2, error eliminado, un registro remoto y ningun nuevo envio al procesar otra vez. PASS. |
+| Reintento por clave de idempotencia | Misma secuencia, conservando la clave y cambiando el ID propuesto | Se recupera la operacion original, se confirma una sola inspeccion y no se envia de nuevo una operacion ya procesada. PASS. |
+
+Salida real resumida del runner de integracion (codigo de salida 0):
+
+```text
+tests 6
+suites 0
+pass 6
+fail 0
+cancelled 0
+skipped 0
+todo 0
+```
+
+`npm run verify` termino con codigo 0 e incluyo `npm test` y `npm run build`. La suite existente aprobo y ademas se ejecutaron los seis casos nuevos con PASS. El [reporte TAP](../tests/integration/results.tap) conserva la salida real del runner especifico.
+
+`npm run build` termino con codigo 0: `Compiled successfully`, validacion de tipos y generacion de las cinco paginas completadas. La comprobacion de tipos explicita de los dos archivos de integracion tambien termino con codigo 0 y sin diagnosticos; se ejecuto por separado porque el tsconfig compartido incluye `src/`, no `tests/`.
+
+### Que demuestra y limites conocidos
+
+- Demuestra la integracion de cola, serializacion, almacenamiento simulado y handler remoto, con aserciones sobre estados persistidos, payload e identidad; no se limita a buscar nombres en el codigo.
+- La recarga se simula reemplazando `window` y creando otra instancia que lee las cadenas guardadas. No es una recarga real de pagina ni una prueba E2E; no certifica persistencia fisica de un navegador, Service Worker o IndexedDB.
+- `onLine: false` describe el entorno del fixture. La cola no consulta conectividad ni inicia envios automaticamente: el test decide cuando llamar a `processQueue`. No se demuestra deteccion de reconexion ni captura offline desde la interfaz.
+- El servidor se representa por el contrato booleano real del handler. Se simulan rechazo, exito y excepcion; no se comprueban HTTP, endpoints, autenticacion ni un backend de produccion.
+- El fixture remoto no deduplica: cada exito agregaria otro registro. Los casos comprueban que solo se registra un exito y que una operacion confirmada no se reenvia. No certifican idempotencia real del backend, concurrencia, perdida de acuse despues de una escritura remota ni exactamente una escritura ante fallos distribuidos.
+- No se imponen reglas nuevas sobre `maxRetries`, backoff ni conflictos. Unitarias nuevas, E2E, estrategia global, defecto controlado y CI corresponden al trabajo coordinado del equipo y quedan fuera de esta contribucion individual.
+- Esta evidencia registra la validacion local. El PR se dirige a `develop`, segun confirmacion del usuario. Los enlaces y resultados remotos del SHA individual se reportan al cerrar la entrega; el SHA final comun y la validacion completa de Semana 08 corresponden a la integracion posterior del equipo.
+
+### Uso de IA
+
+Se utilizo ChatGPT/Codex para contrastar PDF y ZIP con el repositorio, preparar los fixtures y las seis pruebas y redactar esta seccion. La validacion automatizada realizada en la sesion consistio en ejecutar los comandos anteriores y revisar resultados y diferencias. Esta declaracion no atribuye al estudiante una revision manual que aun no haya realizado; debe revisar y poder explicar su contribucion antes de entregarla.
 # Evidencia individual · semana 8
 
 ## Nombre: Felix Ivan Garcia Flores (3523110172)
