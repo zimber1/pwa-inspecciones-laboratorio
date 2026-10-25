@@ -2,8 +2,9 @@ node_modules/
 .next/
 out/
 coverage/
+test-results/
 *.log
+*.tsbuildinfo
 .env*
 !.env.example
 reports/verification.json
-
