@@ -118,15 +118,21 @@ Los criterios de esta semana permiten comprobar el funcionamiento del starter, l
 |---|---|---|---|
 | Instalación reproducible | `npm ci` | Las dependencias se instalan correctamente utilizando el `package-lock.json` | Técnica |
 | Pantalla inicial | `npm run dev` y revisión de `http://localhost:3000` | La aplicación inicia y muestra las tres inspecciones sintéticas proporcionadas por el starter | Técnica y visual |
-| Prueba proporcionada | `npm test` | La prueba incluida en el starter termina correctamente y muestra `PASS` | Técnica |
+| Suite de regresión e integración | `npm test` | Las pruebas de regresión y de integración terminan con código de salida cero | Técnica |
 | Compilación | `npm run build` | El proyecto compila correctamente sin errores | Técnica |
-| Verificación del starter | `npm run verify` | La prueba proporcionada y el proceso de compilación terminan correctamente y se genera `reports/verification.json` | Técnica |
+| Verificación técnica | `npm run verify` | La estructura y los tipos se validan; regresión, unitarias, integración, E2E y build terminan correctamente; se genera `reports/verification.json` | Técnica |
 | Requisitos del producto | Revisión de `docs/requirements.md` | El documento contiene el problema, usuarios, escenarios, requisitos funcionales, requisitos no funcionales, datos sintéticos y límites definidos para el producto | Revisión de contenido |
 | Decisión tecnológica | Revisión de `docs/decision-record.md` | El documento compara PWA, web tradicional, aplicación nativa y multiplataforma y justifica la estrategia seleccionada | Revisión de contenido |
 | Evidencia individual | Revisión de `evidence/individual.md` | Cada integrante documenta su contribución, una decisión, una prueba ejecutada, su resultado, limitaciones y uso de IA | Revisión individual |
 
 ### Alcance de la verificación
 
-La ejecución de `npm run verify` comprueba los archivos definidos por el starter, ejecuta la prueba proporcionada y realiza la compilación del proyecto. El resultado técnico `pass` no demuestra por sí mismo que el análisis de requisitos sea correcto, que la decisión tecnológica sea adecuada, que se cumplan los criterios de accesibilidad o rendimiento, ni que las capacidades futuras de operación offline y sincronización estén implementadas.
+La ejecución de `npm run verify` comprueba la estructura requerida, los tipos,
+las suites de regresión/unitaria/integración, la prueba E2E y la compilación de
+producción. Genera los reportes configurados para pruebas y `reports/verification.json`.
+El resultado técnico `pass` no demuestra por sí mismo que el análisis de
+requisitos sea correcto, que la decisión tecnológica sea adecuada, que se
+cumplan los criterios de accesibilidad o rendimiento, ni que exista
+sincronización remota real.
 
 Las capacidades de instalación PWA, funcionamiento offline, persistencia local, sincronización, notificaciones y autenticación no forman parte de los criterios de implementación de la Semana 1 y serán verificadas en las etapas correspondientes del proyecto.

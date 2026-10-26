@@ -11,6 +11,11 @@ const STORAGE_KEY = "pwa-inspecciones-sync-queue";
  */
 export class SyncQueue {
   private operations: Map<string, SyncOperation> = new Map();
+  private storageLoadError: Error | undefined;
+  private processing: Promise<{
+    processed: SyncOperation[];
+    failed: SyncOperation[];
+  }> | undefined;
 
   constructor() {
     this.operations = new Map();
@@ -18,36 +23,44 @@ export class SyncQueue {
   }
 
   private loadFromStorage(): void {
-    if (typeof window === "undefined" || !window.localStorage) {
-      return;
-    }
-
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-
-    if (!stored) {
+    if (typeof window === "undefined") {
       return;
     }
 
     try {
+      const storage = window.localStorage;
+      if (!storage) throw new Error("El navegador no ofrece almacenamiento local");
+      const stored = storage.getItem(STORAGE_KEY);
+      if (!stored) return;
+
       const parsed = JSON.parse(stored) as {
         version: number;
         operations: SyncOperation[];
       };
 
       if (!Array.isArray(parsed.operations)) {
-        return;
+        throw new Error("El formato de la cola no contiene una lista de operaciones");
       }
 
       this.operations = new Map(
         parsed.operations.map((operation) => [operation.id, operation])
       );
-    } catch {
-      this.operations = new Map();
+    } catch (error) {
+      this.storageLoadError = new Error(
+        `No se pudo recuperar la cola local: ${errorMessage(error)}`
+      );
+    }
+  }
+
+  private assertStorageReady(): void {
+    if (this.storageLoadError) {
+      throw this.storageLoadError;
     }
   }
 
   private saveToStorage(): void {
-    if (typeof window === "undefined" || !window.localStorage) {
+    this.assertStorageReady();
+    if (typeof window === "undefined") {
       return;
     }
 
@@ -56,7 +69,13 @@ export class SyncQueue {
       operations: Array.from(this.operations.values())
     };
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    try {
+      const storage = window.localStorage;
+      if (!storage) throw new Error("El navegador no ofrece almacenamiento local");
+      storage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      throw new Error(`No se pudo guardar la cola local: ${errorMessage(error)}`);
+    }
   }
 
   /**
@@ -69,6 +88,7 @@ export class SyncQueue {
     action: SyncActionType = "CREATE_INSPECTION",
     options?: { id?: string; idempotencyKey?: string; maxRetries?: number }
   ): SyncOperation {
+    this.assertStorageReady();
     const id = options?.id || payload.id || `op-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const idempotencyKey = options?.idempotencyKey || `idem-${action}-${payload.id || id}`;
 
@@ -91,7 +111,12 @@ export class SyncQueue {
     };
 
     this.operations.set(id, newOperation);
-    this.saveToStorage();
+    try {
+      this.saveToStorage();
+    } catch (error) {
+      this.operations.delete(id);
+      throw error;
+    }
 
     return newOperation;
   }
@@ -100,8 +125,23 @@ export class SyncQueue {
    * Recupera todas las operaciones que todavía requieren procesamiento ('pending' o 'failed').
    */
   public getPending(): SyncOperation[] {
+    this.assertStorageReady();
     return Array.from(this.operations.values()).filter(
-      (op) => op.status === "pending" || op.status === "failed"
+      (op) =>
+        (op.status === "pending" || op.status === "failed") &&
+        op.retryCount < (op.maxRetries ?? 3)
+    );
+  }
+
+  /**
+   * Recupera fallos cuyo límite de intentos ya se agotó, sin eliminarlos.
+   */
+  public getExhausted(): SyncOperation[] {
+    this.assertStorageReady();
+    return Array.from(this.operations.values()).filter(
+      (op) =>
+        (op.status === "pending" || op.status === "failed") &&
+        op.retryCount >= (op.maxRetries ?? 3)
     );
   }
 
@@ -109,6 +149,7 @@ export class SyncQueue {
    * Recupera todas las operaciones registradas en la cola.
    */
   public getAll(): SyncOperation[] {
+    this.assertStorageReady();
     return Array.from(this.operations.values());
   }
 
@@ -116,6 +157,7 @@ export class SyncQueue {
    * Obtiene una operación por su identificador único.
    */
   public getById(id: string): SyncOperation | undefined {
+    this.assertStorageReady();
     return this.operations.get(id);
   }
 
@@ -123,6 +165,7 @@ export class SyncQueue {
    * Obtiene una operación por su clave de idempotencia.
    */
   public getByIdempotencyKey(key: string): SyncOperation | undefined {
+    this.assertStorageReady();
     return Array.from(this.operations.values()).find((op) => op.idempotencyKey === key);
   }
 
@@ -139,33 +182,63 @@ export class SyncQueue {
     processed: SyncOperation[];
     failed: SyncOperation[];
   }> {
+    this.assertStorageReady();
+    if (this.processing) return this.processing;
+
+    const processing = this.processPendingOperations(handler);
+    this.processing = processing;
+    try {
+      return await processing;
+    } finally {
+      this.processing = undefined;
+    }
+  }
+
+  private async processPendingOperations(handler: ProcessSyncHandler): Promise<{
+    processed: SyncOperation[];
+    failed: SyncOperation[];
+  }> {
     const pending = this.getPending();
     const processed: SyncOperation[] = [];
     const failed: SyncOperation[] = [];
 
     for (const op of pending) {
-      op.retryCount += 1;
-      op.lastAttemptAt = new Date().toISOString();
+      const nextOperation: SyncOperation = {
+        ...op,
+        retryCount: op.retryCount + 1,
+        lastAttemptAt: new Date().toISOString()
+      };
+      let succeeded = false;
 
       try {
-        const success = await handler(op);
+        const handlerOperation: SyncOperation = {
+          ...op,
+          payload: JSON.parse(JSON.stringify(op.payload)) as SyncOperation["payload"]
+        };
+        const success = await handler(handlerOperation);
         if (success) {
-          op.status = "processed";
-          op.errorMessage = undefined;
-          processed.push(op);
+          nextOperation.status = "processed";
+          nextOperation.errorMessage = undefined;
+          succeeded = true;
         } else {
-          op.status = "failed";
-          op.errorMessage = op.errorMessage || "Error durante el intento de sincronización";
-          failed.push(op);
+          nextOperation.status = "failed";
+          nextOperation.errorMessage =
+            op.errorMessage || "Error durante el intento de sincronización";
         }
       } catch (err) {
-        op.status = "failed";
-        op.errorMessage = err instanceof Error ? err.message : String(err);
-        failed.push(op);
+        nextOperation.status = "failed";
+        nextOperation.errorMessage = errorMessage(err);
       }
 
-      this.operations.set(op.id, op);
-      this.saveToStorage();
+      this.operations.set(op.id, nextOperation);
+      try {
+        this.saveToStorage();
+      } catch (error) {
+        this.operations.set(op.id, op);
+        throw error;
+      }
+
+      (succeeded ? processed : failed).push(nextOperation);
     }
 
     return { processed, failed };
@@ -175,9 +248,20 @@ export class SyncQueue {
    * Elimina o reinicia las operaciones de la cola (útil para pruebas y limpieza).
    */
   public clear(): void {
+    this.assertStorageReady();
+    const previousOperations = new Map(this.operations);
     this.operations.clear();
-    this.saveToStorage();
+    try {
+      this.saveToStorage();
+    } catch (error) {
+      this.operations = previousOperations;
+      throw error;
+    }
   }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 // Instancia singleton por defecto para el proyecto

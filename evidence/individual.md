@@ -1,4 +1,4 @@
-# Evidencia individual del equipo
+﻿# Evidencia individual del equipo
 
 > Un solo archivo compartido. Repitan la sección siguiente por cada integrante; cada persona escribe y explica su propia evidencia. Se aceptan evidencias previas equivalentes. El SHA final se entrega en Classroom después del último commit, para evitar modificar el commit que se está identificando.
 
@@ -893,3 +893,21 @@ Se utilizo ChatGPT/Codex para contrastar PDF y ZIP con el repositorio, preparar 
   - En el entorno local con Windows, el shim predeterminado de NVM presentaba un bloqueo de firma (`NVM4306`) sobre la versión `22.22.0`, por lo que se utilizó directamente la instalación verificada de Node.js `v20.19.5` (compatible con `engines.node >= 20.19.0` y con la versión `20.19.6` del workflow de GitHub Actions). Asimismo, se identificó que la rama de integración en el repositorio remoto se denomina `develop` (y no `devop`), lo cual se verificó con `git ls-remote --heads origin` antes de preparar la entrega.
 - IA: herramienta, propósito, partes influidas y validación propia; o «no utilicé IA»:
   - Utilicé Antigravity (modelo Gemini) como asistente de programación para estructurar las pruebas unitarias en `tests/unit/validation.spec.ts` y `tests/unit/idempotency.spec.ts`, configurar la generación de reportes `lcov`/`junit` en `.github/workflows/academic-evaluation.yml` y documentar esta sección de evidencia. Validé personalmente cada archivo ejecutando las suites de regresión y de la Semana 08, comprobando el fallo y recuperación del defecto controlado y verificando el build de producción con `npm run verify`.
+
+# Evidencia individual · Semana 8
+## Nombre: Claudia Espinosa López
+**Grupo y equipo:** 10 B · Equipo 5
+**Mi contribución de esta semana y enlace:
+Trabajé en la rama `feature/semana-08-claudia-e2e-docs`, enfocada en pruebas E2E, documentación y QA. Se trabajó en `tests/e2e/`, `playwright.config.ts`, `docs/test-strategy.md`, `README.md` y `evidence/individual.md`, además de revisar la integración de las pruebas y la verificación general del proyecto.
+**Decisión técnica y motivo:
+Validar el flujo de inspecciones desde su creación y guardado offline hasta la recarga y reconexión, comprobando que no se dupliquen operaciones. También se contemplaron escenarios de cámara y geolocalización denegadas o no disponibles.
+**Prueba/comando que ejecuté:
+Verificaciones registradas: `npm ci`, `npm run typecheck`, `npm run test:unit`, `npm run test:integration`, `npm run test:e2e`, `npm run build` y `npm run verify`.
+**Resultado observado y enlace al reporte:
+El registro local reportó 18/18 pruebas de integración y 1/1 prueba E2E aprobadas, junto con compilación y verificación de tipos satisfactorias. Reporte: `reports/verification.json`.
+**Qué demuestra y qué no demuestra:
+Demuestra que los escenarios automatizados registrados pasaron en el entorno local. No demuestra sincronización efectiva con un servidor remoto ni ejecución satisfactoria de GitHub Actions.
+**Limitación o riesgo:
+La aplicación utiliza `localStorage` y no dispone de sincronización remota completa. La persistencia puede perderse al borrar los datos del navegador.
+**IA: herramienta, propósito, partes influidas y validación propia
+Se utilizó Codex para apoyar el análisis técnico, los ajustes de configuración, las pruebas y la documentación. Se revisaron los resultados registrados y las limitaciones; la validación remota continúa pendiente.
