@@ -8,7 +8,12 @@ Proyecto integrador para una PWA de inspecciones y mantenimiento de laboratorios
 - npm `>=10.0.0`
 - Git
 
-La versión de Node.js debe ser compatible con el entorno definido por el curso. La verificación de las semanas se ejecuta mediante los scripts del proyecto y GitHub Actions.
+El lockfile fija Next.js `16.4.3`, React/React DOM `18.3.1`, TypeScript
+`5.4.5` y Playwright `1.64.1`. Next.js 16 requiere Node.js `>=20.9.0` y
+TypeScript `>=5.1`; el proyecto conserva un requisito Node más estricto por el
+entorno del curso. React 18 sigue aceptado por Next.js 16, aunque el framework
+emite un aviso de deprecación y anuncia que dejará de aceptarlo en Next.js 17;
+planificar React 19 antes de esa actualización.
 
 ## Setup
 
@@ -29,13 +34,31 @@ Abrir `http://localhost:3000`. La pantalla muestra el shell de inspecciones, nav
 ## Verificación
 
 ```bash
-npm test
-npm run build
-make verify
-bash public-tests/check.sh
+npm ci
+npm run verify
 ```
 
-`make verify` ejecuta el equivalente local de `npm run verify`: prueba automatizada y build de Next.js. El reporte local se genera en `reports/verification.json` y no se versiona.
+Para ejecutar las capas por separado:
+
+```bash
+npm run typecheck
+npm run test:unit
+npm run test:integration
+npx playwright install chromium
+npm run test:e2e
+npm run build
+npm test
+```
+
+`npm test` ejecuta la suite de regresión y las pruebas de integración.
+`npm run verify` ejecuta, en orden, la comprobación de tipos, la suite de
+regresión/unitaria/de integración con cobertura, Playwright E2E y el build de
+producción. Genera `coverage/lcov.info`, `test-results/junit.xml`, reportes de
+Playwright en CI y `reports/verification.json`; los reportes locales no se
+versionan. GitHub Actions publica los reportes incluso si una verificación
+falla. La evaluación académica permanece pendiente de revisión humana.
+`bash public-tests/check.sh` es un chequeo adicional del curso, independiente
+de `npm run verify`.
 
 La suite incluye:
 
@@ -371,10 +394,10 @@ La ruta:
 
 utiliza un componente de servidor asíncrono.
 
-El identificador se obtiene mediante:
+En Next.js 16, `params` es asíncrono y el identificador se obtiene mediante:
 
 ```text
-params.id
+const { id } = await params
 ```
 
 La implementación utiliza datos sintéticos y simula una latencia de servidor.
@@ -439,7 +462,7 @@ La prueba verifica de forma determinista:
 - estados de carga y error del listado;
 - acciones de refresco, filtrado, simulación de error y reintento;
 - implementación SSR mediante función asíncrona;
-- utilización de `params.id`;
+- resolución asíncrona de `params` para obtener el identificador;
 - uso de `notFound()`;
 - datos sintéticos del detalle;
 - estado de carga;
@@ -644,23 +667,57 @@ Esta rama no implementa `src/lib/device/camera.ts` ni
 `src/lib/device/geolocation.ts` porque el PDF individual de Cesar asigna
 unicamente `src/lib/notifications/client.ts`.
 
-## Semana 08 - Integracion de Cesar
+## Semana 08 — Captura local, pruebas y CI
 
-Las pruebas de `tests/integration/queue.spec.ts` integran la cola real con
-almacenamiento y respuestas remotas simuladas: persistencia tras reconstruir
-la instancia, fallos, confirmacion y reintentos sin duplicados. Los casos usan
-datos sinteticos y restauran el entorno despues de cada prueba.
+Las pruebas de integración cubren la cola y el servicio de inspecciones con
+almacenamiento y handlers simulados: validación, persistencia, recuperación,
+conectividad, fallos, reintentos, concurrencia e idempotencia. Los casos usan
+datos sintéticos y restauran el entorno después de cada prueba.
 
 ```sh
 npm run test:integration
 ```
 
-Tambien se ejecutan desde `npm test` y `npm run verify` (equivalente exacto de
-`make verify`). Usar Node >=20.19.0 e instalar con `npm ci`.
+También se ejecutan desde `npm test` y `npm run verify`. Usar Node >=20.19.0
+e instalar con `npm ci`.
 Preparacion, escenarios, generacion del reporte TAP y limites:
 [guia de integracion](tests/integration/README.md).
-La recarga se simula a nivel de almacenamiento; los E2E de la interfaz y el
-workflow completo de Semana 08 corresponden a la integracion del equipo.
+La recarga de integración se simula a nivel de almacenamiento. La prueba E2E
+usa Chromium para verificar la captura en la interfaz y su persistencia local
+después de recargar.
+
+### Creacion local desde la interfaz
+
+La ruta `src/app/inspecciones/page.tsx` permite crear inspecciones y validarlas
+con `validateLocalInspection`. `src/lib/storage/inspections.ts` conserva los
+registros bajo la clave `pwa-inspecciones-local-inspections`; los datos
+sinteticos de `src/lib/data/inspections.ts` se mantienen separados. Al iniciar
+o refrescar la ruta, los registros locales se combinan con los datos
+sinteticos y se reconcilian idempotentemente con `SyncQueue`.
+
+Los eventos `online` y `offline` actualizan el estado de conectividad. La cola
+evita procesamientos concurrentes y limita cada operacion a sus
+`maxRetries` (tres por defecto). No hay endpoint ni servicio remoto configurado:
+sin un handler remoto no se procesan operaciones ni se consumen reintentos.
+Cuando se configura un handler y este falla, la operación queda como `failed`;
+los reintentos se detienen al agotar el límite. `getPending()` devuelve fallos con intentos disponibles y
+`getExhausted()` permite consultar los agotados; ambos se conservan en el
+historial para diagnostico. La interfaz diferencia guardado local, operación
+pendiente, fallo de intento, agotamiento y éxito reportado por el handler. Ese
+éxito solo se muestra si un handler lo devuelve y no acredita por sí mismo una
+sincronización remota. Nunca se marca como `processed` sin esa confirmación del
+handler. El Service Worker no implementa sincronizacion en segundo plano.
+
+La persistencia depende del `localStorage` del navegador y su origen; limpiar
+los datos del sitio puede eliminar inspecciones y operaciones. No se implementan
+base de datos remota, transporte HTTP, respaldo institucional, sincronización
+entre dispositivos ni idempotencia garantizada por un servidor.
+
+`tests/integration/inspections.spec.ts` prueba creacion valida e invalida,
+persistencia entre reconstrucciones, encolado/idempotencia, modo offline,
+recuperacion de conectividad, fallo de transporte, limite de reintentos y
+procesamiento concurrente. Estos casos ejercitan los servicios y la cola con
+APIs del navegador simuladas; no son pruebas E2E visuales de navegador.
 
 ## Entrega
 
@@ -668,8 +725,8 @@ Antes de entregar:
 
 ```bash
 npm ci
-npm test
-npm run build
+npm run verify
+npm audit
 ```
 
 Fijar el commit evaluado con:

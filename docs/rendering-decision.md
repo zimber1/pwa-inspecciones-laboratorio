@@ -66,7 +66,9 @@ En SSR, la página se ejecuta como un componente de servidor.
 
 La ruta `/inspecciones/[id]` no utiliza `"use client"` y su componente principal es una función asíncrona.
 
-La ruta recibe el identificador dinámico mediante `params.id`, consulta los datos sintéticos definidos para el detalle y genera el contenido de la inspección.
+En Next.js 16, `params` es asíncrono. La ruta resuelve `await params` para
+obtener el identificador dinámico, consulta los datos sintéticos definidos
+para el detalle y genera el contenido de la inspección.
 
 Cuando el identificador no existe, se utiliza `notFound()` para delegar el resultado al componente `not-found.tsx`.
 
@@ -120,10 +122,10 @@ Archivo:
 src/app/inspecciones/[id]/page.tsx
 ```
 
-La ruta utiliza un componente de servidor asíncrono y recibe el identificador dinámico mediante:
+La ruta utiliza un componente de servidor asíncrono y resuelve el parámetro de ruta:
 
 ```text
-params.id
+const { id } = await params
 ```
 
 La implementación contiene datos sintéticos para tres inspecciones y simula una latencia de 1500 ms para hacer observable el estado de carga.

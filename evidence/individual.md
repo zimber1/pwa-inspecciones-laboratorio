@@ -1,4 +1,4 @@
-# Evidencia individual del equipo
+﻿# Evidencia individual del equipo
 
 > Un solo archivo compartido. Repitan la sección siguiente por cada integrante; cada persona escribe y explica su propia evidencia. Se aceptan evidencias previas equivalentes. El SHA final se entrega en Classroom después del último commit, para evitar modificar el commit que se está identificando.
 
@@ -893,3 +893,93 @@ Se utilizo ChatGPT/Codex para contrastar PDF y ZIP con el repositorio, preparar 
   - En el entorno local con Windows, el shim predeterminado de NVM presentaba un bloqueo de firma (`NVM4306`) sobre la versión `22.22.0`, por lo que se utilizó directamente la instalación verificada de Node.js `v20.19.5` (compatible con `engines.node >= 20.19.0` y con la versión `20.19.6` del workflow de GitHub Actions). Asimismo, se identificó que la rama de integración en el repositorio remoto se denomina `develop` (y no `devop`), lo cual se verificó con `git ls-remote --heads origin` antes de preparar la entrega.
 - IA: herramienta, propósito, partes influidas y validación propia; o «no utilicé IA»:
   - Utilicé Antigravity (modelo Gemini) como asistente de programación para estructurar las pruebas unitarias en `tests/unit/validation.spec.ts` y `tests/unit/idempotency.spec.ts`, configurar la generación de reportes `lcov`/`junit` en `.github/workflows/academic-evaluation.yml` y documentar esta sección de evidencia. Validé personalmente cada archivo ejecutando las suites de regresión y de la Semana 08, comprobando el fallo y recuperación del defecto controlado y verificando el build de producción con `npm run verify`.
+
+# Evidencia individual · Semana 8
+## Nombre: Claudia Espinosa López
+**Grupo y equipo:** 10 B · Equipo 5
+**Rama de trabajo:** `feature/semana-08-claudia-e2e-docs`
+**Responsabilidad:** QA, pruebas end-to-end (E2E), documentación técnica y verificación de la integración.
+
+## 1. Mi contribución de esta semana y archivos relacionados
+
+Durante la Semana 8 trabajé en el aseguramiento de la calidad de la PWA de inspecciones de laboratorio, con énfasis en las pruebas automatizadas, la documentación técnica y la verificación del flujo de trabajo.
+
+Los archivos relacionados con mi contribución incluyen:
+
+- `tests/e2e/inspections.spec.ts`: prueba E2E para crear una inspección sintética y comprobar su persistencia local después de recargar la página.
+- `playwright.config.ts`: configuración de Playwright, Chromium, servidor local, trazas, capturas ante fallos y reportes para CI.
+- `docs/test-strategy.md`: documentación de la estrategia de pruebas, comandos de ejecución, criterios de aceptación y limitaciones.
+- `tests/integration/inspections.spec.ts`: pruebas de integración para la creación de inspecciones, el almacenamiento local y la cola de operaciones.
+- `tests/integration/README.md`: instrucciones y descripción de las pruebas de integración.
+- `README.md`: actualización de instrucciones y documentación general del proyecto.
+- `scripts/verify.mjs`: ampliación de la verificación automatizada y generación del reporte `reports/verification.json`.
+- `.github/workflows/academic-evaluation.yml`: actualización del flujo de evaluación para instalar Chromium, ejecutar la verificación y publicar los reportes.
+- `package.json` y `package-lock.json`: incorporación de Playwright y actualización de los comandos de pruebas.
+- `evidence/individual.md`: registro de las contribuciones, resultados y limitaciones de la Semana 8.
+
+La rama también contiene cambios compartidos de interfaz, almacenamiento, validación y cola de sincronización. Esta evidencia identifica los archivos relacionados con mi entrega sin atribuirme individualmente toda la implementación del equipo.
+
+## 2. Decisión técnica y justificación
+
+Se incorporó una prueba end-to-end mediante Playwright para comprobar un recorrido de usuario desde el navegador. La prueba utiliza datos sintéticos y valida que una inspección pueda crearse desde la interfaz, guardarse localmente y continuar visible después de recargar la página.
+
+Esta prueba complementa los demás niveles de verificación:
+
+- **Pruebas unitarias:** comprueban funciones y reglas de validación de forma aislada.
+- **Pruebas de integración:** verifican la interacción entre la creación de inspecciones, el almacenamiento local y la cola de operaciones.
+- **Pruebas E2E:** validan el flujo de usuario desde la interfaz hasta la persistencia local.
+
+También se documentaron las limitaciones de la persistencia local y la ausencia de un backend remoto configurado y verificado en el flujo descrito.
+
+## Pruebas y comandos ejecutados
+
+Los comandos registrados durante la verificación local fueron:
+
+    npm ci
+    npm run typecheck
+    npm run test:unit
+    npm run test:integration
+    npm run test:e2e
+    npm run build
+    npm run verify
+
+El comando `npm run verify` comprueba la estructura del proyecto, ejecuta la verificación de tipos, las pruebas automatizadas configuradas y la compilación de producción.
+
+##  Resultados observados y reporte técnico
+
+Los resultados registrados en el entorno local fueron los siguientes:
+
+| Comprobación | Resultado registrado |
+|---|---|
+| Estructura obligatoria | Aprobada |
+| Verificación de TypeScript | Aprobada |
+| Pruebas unitarias, regresión e integración | Aprobadas |
+| Pruebas de integración | 18 de 18 aprobadas |
+| Pruebas E2E | 1 de 1 aprobada |
+| Compilación de producción | Aprobada |
+| Verificación general | `pass` |
+| Revisión académica | `pending` |
+
+**Reporte técnico:** `reports/verification.json`
+
+El reporte registra los resultados técnicos y mantiene la revisión académica en estado `pending`, ya que la automatización no asigna calificaciones.
+
+Estos resultados corresponden a la ejecución local registrada. Para confirmar la ejecución remota, es necesario consultar el resultado del workflow en GitHub Actions.
+
+Estas limitaciones deben considerarse al interpretar los resultados y definir las siguientes actividades de mantenimiento y validación.
+
+##  Uso de inteligencia artificial y validación propia
+
+La declaración de herramientas de inteligencia artificial debe corresponder exclusivamente a las herramientas que se utilizaron realmente durante el desarrollo.
+
+En los registros de la evidencia se mencionan Antigravity (Gemini) y Codex. Debe verificarse cuáles se utilizaron efectivamente durante la Semana 8 para evitar atribuir acciones a herramientas que no participaron en el trabajo.
+
+La validación propia incluyó la revisión de los cambios, la ejecución de los comandos de prueba registrados y la identificación de las limitaciones técnicas de la solución.
+
+La validación remota del workflow de GitHub Actions permanece pendiente hasta consultar sus resultados en el repositorio.
+
+## Identificación del commit
+**Rama de trabajo:** `feature/semana-08-claudia-e2e-docs`
+- **Mensaje del commit registrado:** `pruebas(semana-08): agregar pruebas E2E y documentación de QA
+- **SHA del commit registrado antes de esta actualización de la evidencia: `ad267c0a05afcfd6c70c9d0f4a3176699643c9ac
+El SHA definitivo se registrará después del último commit y se entregará en Classroom, conforme a las instrucciones del proyecto.

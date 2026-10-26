@@ -138,14 +138,14 @@ assert.match(
 
 assert.match(
   ssrPage,
-  /params:\s*\{\s*id:\s*string\s*\}/,
-  "La ruta SSR debe recibir el identificador dinámico"
+  /params:\s*Promise<\s*\{\s*id:\s*string\s*\}\s*>/,
+  "La ruta SSR debe recibir params asíncronos en Next.js 16"
 );
 
 assert.match(
   ssrPage,
-  /params\.id/,
-  "La ruta SSR debe utilizar el identificador recibido"
+  /const\s+\{\s*id\s*\}\s*=\s*await params/,
+  "La ruta SSR debe resolver params antes de utilizar el identificador"
 );
 
 assert.match(

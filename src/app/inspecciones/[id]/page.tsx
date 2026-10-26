@@ -1,7 +1,15 @@
 import { notFound } from 'next/navigation';
 
-// Base de datos sintética simulada
-const mockDatabase: Record<string, any> = {
+type InspectionDetails = {
+  id: string;
+  laboratorio: string;
+  estado: string;
+  fecha: string;
+  inspector: string;
+  observaciones: string;
+};
+
+const mockDatabase: Record<string, InspectionDetails> = {
   'INS-001': {
     id: 'INS-001',
     laboratorio: 'Laboratorio de Química Central',
@@ -28,29 +36,23 @@ const mockDatabase: Record<string, any> = {
   }
 };
 
-// Función para obtener detalles de la inspección con simulación de red (SSR)
-const getInspectionDetails = async (id: string) => {
-  // Simular latencia de red para demostrar el estado de carga
+const getInspectionDetails = async (
+  id: string,
+): Promise<InspectionDetails | null> => {
   await new Promise((resolve) => setTimeout(resolve, 1500));
-  
-  const data = mockDatabase[id];
-  
-  if (!data) {
-    throw new Error('NOT_FOUND');
-  }
 
-  return data;
-}
+  return mockDatabase[id] ?? null;
+};
 
-export default async function InspeccionDetalle({ params }: { params: { id: string } }) {
-  let data;
-  
-  try {
-    data = await getInspectionDetails(params.id);
-  } catch (error) {
-    // Si la inspección no existe, delegar al manejador de no encontrado o error
-    notFound();
-  }
+export default async function InspeccionDetalle({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const data = await getInspectionDetails(id);
+
+  if (!data) notFound();
 
   return (
     <main className="p-8 max-w-4xl mx-auto">
