@@ -1,4 +1,4 @@
-﻿# Evidencia individual del equipo
+# Evidencia individual del equipo
 
 > Un solo archivo compartido. Repitan la sección siguiente por cada integrante; cada persona escribe y explica su propia evidencia. Se aceptan evidencias previas equivalentes. El SHA final se entrega en Classroom después del último commit, para evitar modificar el commit que se está identificando.
 
@@ -771,3 +771,125 @@ Las pruebas cubren ciclo de vida, estrategias de caché, recuperación offline y
 
 
 
+
+## Semana 08 - Cesar Gaspar Pacheco (3522110305) - Pruebas de integracion
+
+- Grupo: `10B`. Trabajo individual limitado a la asignacion del PDF de Cesar.
+- Rama: `feature/semana-08-cesar-integration`, creada desde `origin/develop` (`90f6ecd459739a7b4fa735b77710d6962f796518`). El PDF menciona `devop`; el usuario confirmo `develop` como destino del PR. El SHA final comun del equipo se entrega en Classroom despues de la integracion, sin agregar un commit para escribir su propio hash.
+- Contribucion: [pruebas ejecutables](../tests/integration/queue.spec.ts) y [fixtures aislados](../tests/integration/fixtures.ts). Se conserva la evidencia de semanas anteriores y de los demas integrantes.
+- Decision y motivo: integrar la clase real `SyncQueue` con su serializacion y recuperacion, simulando solo `window.localStorage` y el handler remoto. Se usan `node:test`, `node:assert/strict` y `tsx`, ya disponibles. Se agrega `test:integration` y se invoca desde `npm test` para que un fallo bloquee la verificacion habitual. No se modifica codigo de la aplicacion ni dependencias.
+
+### Diagnostico y precondiciones
+
+Comprobacion local del 24 de octubre de 2026. La cola real persiste el payload de la inspeccion dentro de la operacion, recupera estados `pending` y `failed`, y conserva `processed` sin volver a enviarlo. La interfaz actual no consume esta cola. No hay cliente HTTP de sincronizacion: `processQueue` recibe un handler que devuelve `true`/`false` o lanza un error.
+
+Se ejecuto `npm ci` el 24 de octubre de 2026: codigo 0, 31 paquetes instalados desde el lockfile sin modificarlo. npm uso el Node predeterminado v20.10.0 y advirtio que el proyecto requiere >=20.19.0. Reporto tres vulnerabilidades transitivas; no se aplicaron actualizaciones automaticas fuera del alcance individual.
+
+El proyecto requiere Node >=20.19.0 y npm >=10.0.0. El Node predeterminado de esta maquina es v20.10.0. El reporte TAP y la comprobacion explicita de tipos se ejecutaron con Node v24.22.1, invocado por su ruta completa. El verificador se inicio con ese mismo runtime; los subprocesos npm.cmd pueden usar el Node predeterminado instalado junto a npm. No se cambio la configuracion global. Para comprobar el runtime disponible:
+
+```powershell
+& 'C:\Users\USER\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe' --version
+```
+
+En otro equipo basta con usar una version de Node compatible; esa ruta local no es un requisito del proyecto. No se necesita servidor, cuenta, red real ni dispositivo fisico para ejecutar estos casos.
+
+### Ejecucion reproducible
+
+Desde la raiz del repositorio:
+
+```sh
+npm run test:integration
+npm test
+npm run verify
+node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --esModuleInterop --moduleResolution bundler --module esnext --target es2020 tests/integration/fixtures.ts tests/integration/queue.spec.ts
+```
+
+La integracion se ejecuta con el primer comando y tambien desde `npm test`. `npm run verify` ejecuta todas esas pruebas y el build; es el equivalente exacto de `make verify`. Se conserva la suite compartida y no se modifican workflows. El reporte real de esta capa se conserva en [results.tap](../tests/integration/results.tap); [README de integracion](../tests/integration/README.md) documenta como regenerarlo.
+
+### Preparacion, acciones y resultados por escenario
+
+Cada caso comienza con un almacen vacio y la misma inspeccion sintetica nueva. Se restaura el descriptor original de `window` y se vacia el almacen mediante `finally`, incluso si falla una asercion. Los casos son secuenciales para no compartir el global simulado de forma concurrente.
+
+| Escenario en queue.spec.ts | Preparacion y accion | Resultado esperado y observado |
+| --- | --- | --- |
+| Guardar offline y recuperar el payload completo al recargar | `onLine: false`; encolar, reemplazar `window` conservando las cadenas del almacen y crear otra `SyncQueue` | Se recupera una unica operacion `pending`, con payload completo, identidad y metadatos iguales; los objetos recuperados son distintos de los originales y `retryCount` sigue en 0. PASS. |
+| Respuesta fallida | Handler devuelve `false`; procesar y reconstruir desde almacenamiento | Cero confirmaciones, un fallo, ninguna inspeccion remota, estado `failed`, contador 1, error y fecha registrados; payload e identidad intactos y disponible para reintento. PASS. |
+| Excepcion de transporte | Handler lanza `Error("Fallo de red sintetico")`; procesar y reconstruir | Se conserva el mismo estado reintentable y el mensaje exacto del error, sin perder la inspeccion. PASS. |
+| Respuesta exitosa | Handler devuelve `true`; procesar y reconstruir | Una confirmacion y un registro remoto sintetico; se conserva una operacion `processed`, contador 1, sin error ni pendientes. PASS. |
+| Reintento por ID | Fallo, recarga, reencolado con mismo ID y distinta clave, exito y otra recarga | Una sola operacion; ambos intentos conservan ID, clave original, fecha y payload. Contador 2, error eliminado, un registro remoto y ningun nuevo envio al procesar otra vez. PASS. |
+| Reintento por clave de idempotencia | Misma secuencia, conservando la clave y cambiando el ID propuesto | Se recupera la operacion original, se confirma una sola inspeccion y no se envia de nuevo una operacion ya procesada. PASS. |
+
+Salida real resumida del runner de integracion (codigo de salida 0):
+
+```text
+tests 6
+suites 0
+pass 6
+fail 0
+cancelled 0
+skipped 0
+todo 0
+```
+
+`npm run verify` termino con codigo 0 e incluyo `npm test` y `npm run build`. La suite existente aprobo y ademas se ejecutaron los seis casos nuevos con PASS. El [reporte TAP](../tests/integration/results.tap) conserva la salida real del runner especifico.
+
+`npm run build` termino con codigo 0: `Compiled successfully`, validacion de tipos y generacion de las cinco paginas completadas. La comprobacion de tipos explicita de los dos archivos de integracion tambien termino con codigo 0 y sin diagnosticos; se ejecuto por separado porque el tsconfig compartido incluye `src/`, no `tests/`.
+
+### Que demuestra y limites conocidos
+
+- Demuestra la integracion de cola, serializacion, almacenamiento simulado y handler remoto, con aserciones sobre estados persistidos, payload e identidad; no se limita a buscar nombres en el codigo.
+- La recarga se simula reemplazando `window` y creando otra instancia que lee las cadenas guardadas. No es una recarga real de pagina ni una prueba E2E; no certifica persistencia fisica de un navegador, Service Worker o IndexedDB.
+- `onLine: false` describe el entorno del fixture. La cola no consulta conectividad ni inicia envios automaticamente: el test decide cuando llamar a `processQueue`. No se demuestra deteccion de reconexion ni captura offline desde la interfaz.
+- El servidor se representa por el contrato booleano real del handler. Se simulan rechazo, exito y excepcion; no se comprueban HTTP, endpoints, autenticacion ni un backend de produccion.
+- El fixture remoto no deduplica: cada exito agregaria otro registro. Los casos comprueban que solo se registra un exito y que una operacion confirmada no se reenvia. No certifican idempotencia real del backend, concurrencia, perdida de acuse despues de una escritura remota ni exactamente una escritura ante fallos distribuidos.
+- No se imponen reglas nuevas sobre `maxRetries`, backoff ni conflictos. Unitarias nuevas, E2E, estrategia global, defecto controlado y CI corresponden al trabajo coordinado del equipo y quedan fuera de esta contribucion individual.
+- Esta evidencia registra la validacion local. El PR se dirige a `develop`, segun confirmacion del usuario. Los enlaces y resultados remotos del SHA individual se reportan al cerrar la entrega; el SHA final comun y la validacion completa de Semana 08 corresponden a la integracion posterior del equipo.
+
+### Uso de IA
+
+Se utilizo ChatGPT/Codex para contrastar PDF y ZIP con el repositorio, preparar los fixtures y las seis pruebas y redactar esta seccion. La validacion automatizada realizada en la sesion consistio en ejecutar los comandos anteriores y revisar resultados y diferencias. Esta declaracion no atribuye al estudiante una revision manual que aun no haya realizado; debe revisar y poder explicar su contribucion antes de entregarla.
+# Evidencia individual · semana 8
+
+## Nombre: Felix Ivan Garcia Flores (3523110172)
+
+- Grupo y equipo: 9B-E05 (10B)
+- Mi contribución de esta semana y enlace:
+  Implementé las pruebas unitarias de validación y de la regla de idempotencia en `tests/unit/validation.spec.ts` y `tests/unit/idempotency.spec.ts`, el validador de capturas locales `validateLocalInspection` en `src/lib/storage/schema.ts`, los scripts de verificación de tipos y cobertura en `package.json`, y el workflow de integración continua en `.github/workflows/academic-evaluation.yml` en la rama `feature/semana-08-felix-unit-ci` (commits `50a03a5` y `24f6bff`).
+- Decisión técnica y motivo:
+  1. **Pruebas unitarias con casos válidos e inválidos y regla de idempotencia:** Separé las pruebas en `tests/unit/validation.spec.ts` (que comprueba entradas válidas e inválidas tanto para la captura de una inspección local mediante `validateLocalInspection` como para los candidatos de sincronización en `resolveInspectionConflict`) y `tests/unit/idempotency.spec.ts` (que comprueba la prevención de duplicados por `idempotencyKey` e `id` en `SyncQueue.enqueue`, la conservación de una única operación a través de fallos de red simulados, recargas desde `localStorage` y reintentos exitosos en `processQueue`, así como la decisión `duplicate-operation` en `resolveInspectionConflict`).
+  2. **Cobertura y reportes nativos en CI con `if: always()`:** Configuré `npm run test:coverage` utilizando el corredor nativo de Node.js 20 (`node --experimental-test-coverage --import tsx --test`) con reporteros `spec`, `lcov` (`coverage/lcov.info`) y `junit` (`test-results/junit.xml`). Tomé esta decisión para generar métricas reales de cobertura y reportes estructurados sin agregar dependencias externas que alteraran `package-lock.json`, garantizando que `npm ci` sea 100% reproducible y que `.github/workflows/academic-evaluation.yml` publique siempre los artefactos (`coverage/`, `test-results/`, `reports/verification.json`) mediante `if: always()`, incluso si una etapa previa falla.
+- Prueba/comando que ejecuté:
+  - `npm run typecheck` (`tsc --noEmit --incremental false`)
+  - `npm run test:unit` (`tsx tests/unit/validation.spec.ts && tsx tests/unit/idempotency.spec.ts`)
+  - `npm run test:coverage`
+  - `npm test`
+  - `npm run build`
+  - `npm run verify`
+  - Prueba de defecto controlado sobre `src/lib/sync/queue.ts` ejecutando `npx tsx tests/unit/idempotency.spec.ts` (fallo provocado y posterior recuperación).
+- Resultado observado y enlace al reporte:
+  - `npm run typecheck`: terminó con código de salida `0` sin errores de tipos.
+  - `npm run test:unit`: `validation.spec.ts: PASS` e `idempotency.spec.ts: PASS`.
+  - `npm run test:coverage`: `12/12` archivos de prueba en `PASS` (`82.35%` de cobertura de líneas, `84.85%` de ramas y `75.00%` de funciones en el conjunto evaluado; `94.78%` en `src/lib/storage/schema.ts`, `87.29%` en `src/lib/sync/conflict-policy.ts` y `87.24%` en `src/lib/sync/queue.ts`), generando `coverage/lcov.info` y `test-results/junit.xml`.
+  - `npm run verify`: ejecutó las 12 suites de pruebas (`starter.spec.mjs`, `manifest.spec.ts`, `register-service-worker.spec.ts`, `service-worker.spec.ts`, `offline.spec.ts`, `rendering.spec.ts`, `queue.spec.ts`, `sync.spec.ts`, `capabilities.spec.ts`, `device-capabilities.spec.ts`, `tests/unit/validation.spec.ts`, `tests/unit/idempotency.spec.ts`), compiló la aplicación de producción con Next.js `14.2.35` (`✓ Compiled successfully`) y generó `reports/verification.json` con `Verificación técnica: pass`.
+  - **Evidencia del defecto controlado (fallo y recuperación):**
+    - *Preparación:* En `src/lib/sync/queue.ts` se omitió de manera temporal la guarda de duplicados en `SyncQueue.enqueue` (`if (existingOp.idempotencyKey === idempotencyKey || existingOp.id === id)`).
+    - *Acción / Comando:* `npx tsx tests/unit/idempotency.spec.ts`.
+    - *Resultado esperado con defecto:* La prueba unitaria debe fallar con código distinto de `0` al detectar que una operación repetida con la misma `idempotencyKey` genera un registro duplicado en lugar de devolver la operación original.
+    - *Resultado observado con defecto (Fallo real, exit code `1`):*
+      ```text
+      Ejecutando pruebas unitarias de idempotencia (tests/unit/idempotency.spec.ts)...
+      AssertionError [ERR_ASSERTION]: Repetir enqueue con la misma idempotencyKey debe devolver la operación original
+      + actual - expected
+
+      + 'op-idem-999'
+      - 'op-idem-001'
+      Exit code con defecto: 1
+      ```
+    - *Recuperación tras restaurar la solución (exit code `0`):* Se restauró la verificación de `idempotencyKey` en `src/lib/sync/queue.ts` y se reejecutó `npx tsx tests/unit/idempotency.spec.ts`, obteniendo `idempotency.spec.ts: PASS` y código de salida `0`.
+- Qué demuestra y qué no demuestra:
+  - **Qué demuestra:** Demuestra que las reglas de validación rechazan entradas inválidas (campos vacíos, fechas inválidas, hallazgos negativos, versiones negativas o `NaN`) y aceptan entradas válidas; que la cola de sincronización y la política de conflictos garantizan idempotencia sin duplicar operaciones al reintentar o recargar desde `localStorage`; que las pruebas detectan un defecto real cuando se omite la guarda de idempotencia; y que el flujo de CI compila, ejecuta las pruebas y conserva los artefactos de resultados y cobertura.
+  - **Qué no demuestra:** Las pruebas unitarias por sí solas no demuestran la interacción visual completa en un navegador real ni sustituyen las capas de integración (`tests/integration/`) y End-to-End (`tests/e2e/`) ni el documento grupal `docs/test-strategy.md`, los cuales corresponden a las responsabilidades de los demás integrantes del equipo y a la integración en `develop`.
+- Limitación o riesgo:
+  - En el entorno local con Windows, el shim predeterminado de NVM presentaba un bloqueo de firma (`NVM4306`) sobre la versión `22.22.0`, por lo que se utilizó directamente la instalación verificada de Node.js `v20.19.5` (compatible con `engines.node >= 20.19.0` y con la versión `20.19.6` del workflow de GitHub Actions). Asimismo, se identificó que la rama de integración en el repositorio remoto se denomina `develop` (y no `devop`), lo cual se verificó con `git ls-remote --heads origin` antes de preparar la entrega.
+- IA: herramienta, propósito, partes influidas y validación propia; o «no utilicé IA»:
+  - Utilicé Antigravity (modelo Gemini) como asistente de programación para estructurar las pruebas unitarias en `tests/unit/validation.spec.ts` y `tests/unit/idempotency.spec.ts`, configurar la generación de reportes `lcov`/`junit` en `.github/workflows/academic-evaluation.yml` y documentar esta sección de evidencia. Validé personalmente cada archivo ejecutando las suites de regresión y de la Semana 08, comprobando el fallo y recuperación del defecto controlado y verificando el build de producción con `npm run verify`.
