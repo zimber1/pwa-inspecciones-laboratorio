@@ -88,6 +88,26 @@ function main() {
   assert.ok(missingInspectorAndSummary.errors.includes("statusLabel is required"));
   assert.ok(missingInspectorAndSummary.errors.includes("summary is required"));
 
+  const invalidCalendarDate = validateLocalInspection({
+    ...validInspectionOk,
+    date: "2026-02-30"
+  });
+  assert.equal(invalidCalendarDate.valid, false);
+  assert.ok(
+    invalidCalendarDate.errors.includes("date must be a valid ISO date string")
+  );
+
+  const oversizedFields = validateLocalInspection({
+    ...validInspectionOk,
+    location: "L".repeat(121),
+    inspector: "I".repeat(121),
+    summary: "S".repeat(501)
+  });
+  assert.equal(oversizedFields.valid, false);
+  assert.ok(oversizedFields.errors.includes("location must be 120 characters or fewer"));
+  assert.ok(oversizedFields.errors.includes("inspector must be 120 characters or fewer"));
+  assert.ok(oversizedFields.errors.includes("summary must be 500 characters or fewer"));
+
   // =========================================================================
   // 3. VALIDACIÓN DE CANDIDATOS DE SINCRONIZACIÓN (ENTRADAS VÁLIDAS E INVÁLIDAS)
   // =========================================================================

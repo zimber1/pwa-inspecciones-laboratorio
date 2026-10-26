@@ -86,18 +86,26 @@ export function validateLocalInspection(
 
   if (
     typeof candidate.date !== "string" ||
-    !candidate.date.trim() ||
-    Number.isNaN(Date.parse(candidate.date))
+    !isValidISODate(candidate.date)
   ) {
     errors.push("date must be a valid ISO date string");
   }
 
   if (typeof candidate.inspector !== "string" || !candidate.inspector.trim()) {
     errors.push("inspector is required");
+  } else if (candidate.inspector.length > 120) {
+    errors.push("inspector must be 120 characters or fewer");
   }
 
   if (candidate.status !== "ok" && candidate.status !== "attention") {
     errors.push("status must be 'ok' or 'attention'");
+  }
+
+  if (
+    typeof candidate.location === "string" &&
+    candidate.location.length > 120
+  ) {
+    errors.push("location must be 120 characters or fewer");
   }
 
   if (
@@ -117,6 +125,8 @@ export function validateLocalInspection(
 
   if (typeof candidate.summary !== "string" || !candidate.summary.trim()) {
     errors.push("summary is required");
+  } else if (candidate.summary.length > 500) {
+    errors.push("summary must be 500 characters or fewer");
   }
 
   if (
@@ -131,4 +141,14 @@ export function validateLocalInspection(
     valid: errors.length === 0,
     errors
   };
+}
+
+function isValidISODate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return (
+    !Number.isNaN(date.getTime()) &&
+    date.toISOString().slice(0, 10) === value
+  );
 }

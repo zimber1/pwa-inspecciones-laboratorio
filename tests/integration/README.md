@@ -13,10 +13,11 @@ npm test
 npm run verify
 ```
 
-`test:integration` ejecuta los seis casos de `queue.spec.ts`. `npm test`
-tambien los ejecuta, y `npm run verify` ejecuta esa suite y el build;
-es el equivalente exacto de `make verify` en el Makefile actual.
-Una asercion fallida produce un codigo distinto de cero en todos esos comandos.
+`test:integration` ejecuta `queue.spec.ts` e `inspections.spec.ts`.
+`npm test` también ejecuta la integración después de la regresión.
+`npm run verify` ejecuta tipos, regresión/unitarias/integración, E2E y build
+una sola vez, además de producir los reportes. Una aserción fallida produce un
+código distinto de cero.
 
 Para generar una salida TAP que pueda conservarse como artefacto:
 
@@ -29,6 +30,11 @@ node --import tsx --test --test-reporter=tap --test-reporter-destination=tests/i
 Se integra `SyncQueue` real con serializacion JSON y almacenamiento simulado.
 Cada caso recibe una inspeccion sintetica nueva y un almacen vacio. `finally`
 restaura el global `window` y limpia los datos incluso ante una asercion fallida.
+`inspections.spec.ts` además integra los servicios reales de validación,
+creación, persistencia local y conectividad; incluye fallos de almacenamiento,
+reconstrucción, reintentos agotados y llamadas concurrentes. Un caso confirma
+que la ausencia de handler remoto mantiene la operación pendiente sin consumir
+reintentos.
 
 | Riesgo | Accion | Aserciones |
 | --- | --- | --- |
@@ -50,7 +56,7 @@ no consulta onLine: la prueba controla explicitamente el procesamiento.
 El handler remoto usa el contrato booleano existente, sin HTTP real.
 No se prueba idempotencia de un backend ante perdida de acuse ni concurrencia.
 
-Los E2E en navegador, unitarias adicionales, estrategia global, demostracion
-del defecto controlado y workflow de Semana 08 son entregables coordinados
-del equipo. Este aporte permite que el CI que invoque `npm test` ejecute
-tambien la capa de integracion; no certifica las otras capas.
+Los E2E de navegador están en `tests/e2e/inspections.spec.ts`; no se sustituyen
+por estas pruebas de integración. La estrategia general y los resultados de CI
+se documentan por separado; la ejecución local no certifica que GitHub Actions
+haya pasado.
