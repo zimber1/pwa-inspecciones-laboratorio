@@ -89,6 +89,25 @@ async function main() {
     assert.equal(cameraSuccess.isFallback, false);
     assert.equal(tracksStopped, true);
 
+    // Fallo al capturar el fotograma después de abrir la cámara también libera los tracks.
+    tracksStopped = false;
+    Object.defineProperty(globalThis, "document", {
+      configurable: true,
+      value: {
+        createElement: () => ({
+          autoplay: false,
+          muted: false,
+          srcObject: null,
+          onloadedmetadata: null
+        })
+      }
+    });
+    const captureFailure = await captureCameraEvidence();
+    assert.equal(captureFailure.success, false);
+    assert.equal(captureFailure.isFallback, true);
+    assert.equal(tracksStopped, true);
+    Reflect.deleteProperty(globalThis, "document");
+
     // 4. Geolocalización no disponible: debe usar coordenadas fallback.
     Reflect.deleteProperty(globalThis, "navigator");
 

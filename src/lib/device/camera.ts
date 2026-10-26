@@ -50,6 +50,8 @@ export async function captureCameraEvidence(options: CameraOptions = {}): Promis
     );
   }
 
+  let stream: MediaStream | undefined;
+
   try {
     // 2. Solicitar permisos mínimos: solo video, sin audio, restricción facingMode preferida
     const constraints: MediaStreamConstraints = {
@@ -57,40 +59,44 @@ export async function captureCameraEvidence(options: CameraOptions = {}): Promis
       audio: false
     };
 
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     // Intentar extraer un fotograma usando HTMLVideoElement y Canvas
     const dataUrl = await captureFrameFromStream(stream, options);
 
     // Detener los tracks del stream para liberar la cámara inmediatamente (permisos mínimos)
-    stream.getTracks().forEach((track) => track.stop());
-
     return {
       success: true,
       dataUrl,
       isFallback: false,
       source: 'camera'
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
     // 3. Manejo de errores
     let errorCode: CameraResult['errorCode'] = 'UNKNOWN_ERROR';
     let errorMessage = 'Error desconocido al acceder a la cámara.';
 
-    if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+    const cameraError = err instanceof Error ? err : undefined;
+
+    if (cameraError?.name === 'NotAllowedError' || cameraError?.name === 'PermissionDeniedError') {
       errorCode = 'PERMISSION_DENIED';
       errorMessage = 'Permiso de acceso a la cámara denegado por el usuario.';
-    } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+    } else if (cameraError?.name === 'NotFoundError' || cameraError?.name === 'DevicesNotFoundError') {
       errorCode = 'NOT_FOUND';
       errorMessage = 'No se encontró ninguna cámara conectada en el dispositivo.';
-    } else if (err?.name === 'NotReadableError' || err?.name === 'TrackStartError') {
+    } else if (cameraError?.name === 'NotReadableError' || cameraError?.name === 'TrackStartError') {
       errorCode = 'NOT_READABLE';
       errorMessage = 'La cámara está ocupada o no se pudo acceder a ella.';
-    } else if (typeof err?.message === 'string') {
-      errorMessage = err.message;
+    } else if (cameraError) {
+      errorMessage = cameraError.message;
+    } else if (typeof err === 'string') {
+      errorMessage = err;
     }
 
     // 4. Fallback cuando hay error o rechazo
     return activateCameraFallback(errorMessage, errorCode, options);
+  } finally {
+    stream?.getTracks().forEach((track) => track.stop());
   }
 }
 
