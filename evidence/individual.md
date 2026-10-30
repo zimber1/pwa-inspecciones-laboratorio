@@ -850,6 +850,19 @@ todo 0
 Se utilizo ChatGPT/Codex para contrastar PDF y ZIP con el repositorio, preparar los fixtures y las seis pruebas y redactar esta seccion. La validacion automatizada realizada en la sesion consistio en ejecutar los comandos anteriores y revisar resultados y diferencias. Esta declaracion no atribuye al estudiante una revision manual que aun no haya realizado; debe revisar y poder explicar su contribucion antes de entregarla.
 # Evidencia individual · semana 8
 
+## César — Semana 09: Inventario de privacidad
+
+- Grupo: 10B. Responsable: Cesar Gaspar Pacheco.
+- Rama: `feature/semana-09-cesar-privacy-inventory`, actualizada a `origin/develop` (`b5e6faa6c3aa7134321c2b258c28085738ca0169`).
+- Archivos: [inventario](../docs/privacy-data-inventory.md), [robots.txt](../public/robots.txt) y esta seccion propia.
+- Decision: solicitar a todos los rastreadores no recorrer el prototipo mediante `Disallow: /`, sin presentar robots como control de acceso. Mantener datos sinteticos y documentar que responsable/resumen admiten datos personales potenciales.
+- Revision: lectura de rutas, formulario, almacenamiento de inspecciones, cola, capacidades, SW, configuracion y pruebas. Se identificaron dos claves locales, caches sin TTL y ausencia de handler remoto en la interfaz. Se documentaron finalidad, origen, ubicacion, acceso y retencion por categoria, eliminacion y riesgos pendientes para el equipo.
+- Verificacion del 30 de octubre de 2026: se arranco el Next local en puerto 3189 y se ejecuto `Invoke-WebRequest http://localhost:3189/robots.txt`. Resultado: HTTP 200, `text/plain; charset=UTF-8`, cuerpo `User-agent: *` y `Disallow: /`. Una comparacion exacta del cuerpo normalizando CRLF aprobo. `git diff --check` sin errores.
+- Limitacion del entorno: node_modules conserva Next 14.2.35 mientras package.json declara 16.4.3; el servidor local aviso de dependencias SWC ausentes en lockfile e intento ajustar archivos generados. Se restauraron esos ajustes automaticos. La comprobacion HTTP confirma el recurso con el runtime instalado, no certifica build ni despliegue con las dependencias declaradas. No se reinstalo ni modifico configuracion compartida.
+- Hallazgos: scripts duplicados en package.json; caches sin expiracion; eliminacion de cola insuficiente para borrar inspecciones. Se documentan sin ampliar el alcance a implementacion de seguridad, tests de otros integrantes o workflows.
+- Commit y PR: pendientes del visto bueno explicito del usuario. Destino previsto: develop. No se declara CI nuevo ni SHA de entrega antes de existir.
+- IA: ChatGPT/Codex apoyo la inspeccion del codigo, redaccion del inventario y verificacion HTTP. Los resultados corresponden a herramientas ejecutadas; revision y validacion humana de Cesar pendientes antes de autorizar commit.
+
 ## Nombre: Felix Ivan Garcia Flores (3523110172)
 
 - Grupo y equipo: 9B-E05 (10B)
