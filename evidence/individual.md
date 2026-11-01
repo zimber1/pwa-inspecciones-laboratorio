@@ -1,4 +1,4 @@
-﻿# Evidencia individual del equipo
+# Evidencia individual del equipo
 
 > Un solo archivo compartido. Repitan la sección siguiente por cada integrante; cada persona escribe y explica su propia evidencia. Se aceptan evidencias previas equivalentes. El SHA final se entrega en Classroom después del último commit, para evitar modificar el commit que se está identificando.
 
@@ -848,20 +848,8 @@ todo 0
 ### Uso de IA
 
 Se utilizo ChatGPT/Codex para contrastar PDF y ZIP con el repositorio, preparar los fixtures y las seis pruebas y redactar esta seccion. La validacion automatizada realizada en la sesion consistio en ejecutar los comandos anteriores y revisar resultados y diferencias. Esta declaracion no atribuye al estudiante una revision manual que aun no haya realizado; debe revisar y poder explicar su contribucion antes de entregarla.
-# Evidencia individual · semana 8
 
-## César — Semana 09: Inventario de privacidad
-
-- Grupo: 10B. Responsable: Cesar Gaspar Pacheco.
-- Rama: `feature/semana-09-cesar-privacy-inventory`, actualizada a `origin/develop` (`b5e6faa6c3aa7134321c2b258c28085738ca0169`).
-- Archivos: [inventario](../docs/privacy-data-inventory.md), [robots.txt](../public/robots.txt) y esta seccion propia.
-- Decision: solicitar a todos los rastreadores no recorrer el prototipo mediante `Disallow: /`, sin presentar robots como control de acceso. Mantener datos sinteticos y documentar que responsable/resumen admiten datos personales potenciales.
-- Revision: lectura de rutas, formulario, almacenamiento de inspecciones, cola, capacidades, SW, configuracion y pruebas. Se identificaron dos claves locales, caches sin TTL y ausencia de handler remoto en la interfaz. Se documentaron finalidad, origen, ubicacion, acceso y retencion por categoria, eliminacion y riesgos pendientes para el equipo.
-- Verificacion del 30 de octubre de 2026: se arranco el Next local en puerto 3189 y se ejecuto `Invoke-WebRequest http://localhost:3189/robots.txt`. Resultado: HTTP 200, `text/plain; charset=UTF-8`, cuerpo `User-agent: *` y `Disallow: /`. Una comparacion exacta del cuerpo normalizando CRLF aprobo. `git diff --check` sin errores.
-- Limitacion del entorno: node_modules conserva Next 14.2.35 mientras package.json declara 16.4.3; el servidor local aviso de dependencias SWC ausentes en lockfile e intento ajustar archivos generados. Se restauraron esos ajustes automaticos. La comprobacion HTTP confirma el recurso con el runtime instalado, no certifica build ni despliegue con las dependencias declaradas. No se reinstalo ni modifico configuracion compartida.
-- Hallazgos: scripts duplicados en package.json; caches sin expiracion; eliminacion de cola insuficiente para borrar inspecciones. Se documentan sin ampliar el alcance a implementacion de seguridad, tests de otros integrantes o workflows.
-- Commit y PR: pendientes del visto bueno explicito del usuario. Destino previsto: develop. No se declara CI nuevo ni SHA de entrega antes de existir.
-- IA: ChatGPT/Codex apoyo la inspeccion del codigo, redaccion del inventario y verificacion HTTP. Los resultados corresponden a herramientas ejecutadas; revision y validacion humana de Cesar pendientes antes de autorizar commit.
+# Evidencia individual · Semana 8
 
 ## Nombre: Felix Ivan Garcia Flores (3523110172)
 
@@ -996,3 +984,172 @@ La validación remota del workflow de GitHub Actions permanece pendiente hasta c
 - **Mensaje del commit registrado:** `pruebas(semana-08): agregar pruebas E2E y documentación de QA
 - **SHA del commit registrado antes de esta actualización de la evidencia: `ad267c0a05afcfd6c70c9d0f4a3176699643c9ac
 El SHA definitivo se registrará después del último commit y se entregará en Classroom, conforme a las instrucciones del proyecto.
+
+# Evidencia individual · semana 9
+
+## César — Semana 09: Inventario de privacidad
+
+- Grupo: 10B. Responsable: Cesar Gaspar Pacheco.
+- Rama: `feature/semana-09-cesar-privacy-inventory`, actualizada a `origin/develop` (`b5e6faa6c3aa7134321c2b258c28085738ca0169`).
+- Archivos: [inventario](../docs/privacy-data-inventory.md), [robots.txt](../public/robots.txt) y esta seccion propia.
+- Decision: solicitar a todos los rastreadores no recorrer el prototipo mediante `Disallow: /`, sin presentar robots como control de acceso. Mantener datos sinteticos y documentar que responsable/resumen admiten datos personales potenciales.
+- Revision: lectura de rutas, formulario, almacenamiento de inspecciones, cola, capacidades, SW, configuracion y pruebas. Se identificaron dos claves locales, caches sin TTL y ausencia de handler remoto en la interfaz. Se documentaron finalidad, origen, ubicacion, acceso y retencion por categoria, eliminacion y riesgos pendientes para el equipo.
+- Verificacion del 30 de octubre de 2026: se arranco el Next local en puerto 3189 y se ejecuto `Invoke-WebRequest http://localhost:3189/robots.txt`. Resultado: HTTP 200, `text/plain; charset=UTF-8`, cuerpo `User-agent: *` y `Disallow: /`. Una comparacion exacta del cuerpo normalizando CRLF aprobo. `git diff --check` sin errores.
+- Limitacion del entorno: node_modules conserva Next 14.2.35 mientras package.json declara 16.4.3; el servidor local aviso de dependencias SWC ausentes en lockfile e intento ajustar archivos generados. Se restauraron esos ajustes automaticos. La comprobacion HTTP confirma el recurso con el runtime instalado, no certifica build ni despliegue con las dependencias declaradas. No se reinstalo ni modifico configuracion compartida.
+- Hallazgos: scripts duplicados en package.json; caches sin expiracion; eliminacion de cola insuficiente para borrar inspecciones. Se documentan sin ampliar el alcance a implementacion de seguridad, tests de otros integrantes o workflows.
+- Commit y PR: pendientes del visto bueno explicito del usuario. Destino previsto: develop. No se declara CI nuevo ni SHA de entrega antes de existir.
+- IA: ChatGPT/Codex apoyo la inspeccion del codigo, redaccion del inventario y verificacion HTTP. Los resultados corresponden a herramientas ejecutadas; revision y validacion humana de Cesar pendientes antes de autorizar commit.
+
+## Felix — Semana 09: Modelo de amenazas
+
+- **Estudiante:** Felix Ivan Garcia Flores (`3523110172`)
+- **Grupo y equipo:** `10B` (`9B-E05`)
+- **Rama de trabajo:** `feature/semana-09-felix-threat-model`
+- **Commit SHA evaluado:**
+  - Commit del modelo de amenazas (`docs/threat-model.md`): `41ecd36d46ccef80a17db0a6de784039d1a59bc1` (`41ecd36`).
+  - El SHA final de la rama tras registrar esta evidencia se obtiene mediante `git rev-parse HEAD` y se adjunta en la entrega y en la Pull Request hacia la rama de integración acordada por el equipo (`develop`), evitando un commit extra que altere el hash reportado.
+- **Pull Request:** Pendiente de apertura tras revisión del equipo hacia `develop` desde `feature/semana-09-felix-threat-model`.
+- **Enlaces a mis cambios:**
+  - Modelo de amenazas completo: [docs/threat-model.md](../docs/threat-model.md)
+  - Registro de evidencia individual: [evidence/individual.md](./individual.md)
+- **Archivos del repositorio revisados para fundamentar el análisis:**
+  - Configuración y rutas: `next.config.mjs`, `package.json`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/app-shell.tsx`, `src/app/inspecciones/page.tsx` y `src/app/inspecciones/[id]/page.tsx`.
+  - Almacenamiento, validación y sincronización: `src/lib/storage/schema.ts`, `src/lib/storage/inspections.ts`, `src/lib/data/create-inspection.ts`, `src/lib/data/inspections.ts`, `src/lib/sync/queue.ts`, `src/lib/sync/conflict-policy.ts` y `src/lib/sync/connectivity.ts`.
+  - PWA y capacidades del dispositivo: `public/manifest.webmanifest`, `public/sw.js`, `src/lib/pwa/register-service-worker.ts`, `src/lib/device/camera.ts`, `src/lib/device/geolocation.ts` y `src/lib/notifications/client.ts`.
+  - Integración continua y pruebas existentes: `.github/workflows/academic-evaluation.yml`, `public-tests/check.sh`, `scripts/verify.mjs` y las suites en `tests/`.
+- **Decisión técnica que puedo explicar:**
+  - Estructuré `docs/threat-model.md` separando explícitamente cuatro estados de control (**Verificado**, **Parcial**, **Pendiente de verificar** y **Propuesto**) sobre las cuatro fronteras de confianza reales de la PWA (Dispositivo/Sensores ↔ Navegador, `localStorage`/`Cache Storage` ↔ Aplicación, Cliente CSR ↔ Servidor SSR Next.js, y Aplicación ↔ Backend remoto proyectado).
+  - En lugar de asumir que existen controles de autenticación o sesiones que el código aún no tiene, documenté como vulnerabilidad real la ausencia de inicio/cierre de sesión y la edición libre del campo `inspector` en `src/app/inspecciones/page.tsx` (amenazas `T-01`, `T-02` y `T-03`), diferenciándolos de los controles que sí están implementados y verificados con pruebas en el repositorio: validación de esquema y longitud (`validateLocalInspection` en `src/lib/storage/schema.ts`), revalidación al leer `localStorage` (`readLocalInspections` en `src/lib/storage/inspections.ts`), idempotencia y tope de reintentos (`maxRetries = 3` en `src/lib/sync/queue.ts`), registro de Service Worker solo en contextos seguros (`src/lib/pwa/register-service-worker.ts`), intercepción exclusiva de `GET` con validación `status === 200` y `type === 'basic'` en `Cache First` (`public/sw.js`), y mínimo privilegio en cámara (`audio: false` y `track.stop()`), geolocalización (`enableHighAccuracy: false`) y notificaciones (`userInitiated: true`).
+- **Pruebas ejecutadas y resultados reales observados:**
+  - `npm ci --ignore-scripts --no-audit --no-fund`: código de salida `0` (`added 38 packages in 37s`), sincronizando `node_modules` con Next.js `16.4.3` y Playwright `1.64.1`.
+  - `npm run typecheck` (`tsc --noEmit --incremental false`): código de salida `0` sin errores de tipos.
+  - `npm test`: código de salida `0`. Aprobaron las 12 suites (`starter.spec.mjs`, `manifest.spec.ts`, `register-service-worker.spec.ts`, `service-worker.spec.ts`, `offline.spec.ts`, `rendering.spec.ts`, `queue.spec.ts`, `sync.spec.ts`, `capabilities.spec.ts`, `device-capabilities.spec.ts`, `tests/unit/validation.spec.ts` y `tests/unit/idempotency.spec.ts`) más la suite de integración `tests/integration/queue.spec.ts` (`6/6` subtests en `PASS`).
+  - `node --import tsx --test tests/integration/queue.spec.ts tests/integration/inspections.spec.ts`: código de salida `0` (`18/18` subtests de integración en `PASS`, comprobando rechazo de entradas inválidas, recuperación ante fallos de escritura en `localStorage`, idempotencia, agotamiento de reintentos y concurrencia).
+  - `npx playwright install chromium` y `npm run verify`: código de salida `0`. Ejecutó verificación de estructura (`pass`), `typecheck` (`pass`), cobertura unitaria/regresión (`12/12 PASS`, `80.56%` líneas, `83.46%` ramas, `68.18%` funciones), Playwright E2E (`1 passed (21.5s)` en `tests/e2e/inspections.spec.ts`) y `npm run build` con Next.js `16.4.3 (Turbopack)` (`✓ Compiled successfully in 272ms`, `4/4` páginas generadas), produciendo `reports/verification.json` con `Verificacion tecnica: pass`.
+  - Escaneo de patrones sensibles sobre `docs/threat-model.md` y `evidence/individual.md`: `0` coincidencias prohibidas.
+- **Limitaciones y riesgos diagnosticados:**
+  1. **Ausencia de autenticación, RBAC y flujo de cierre de sesión en UI:** Las pruebas de seguridad sobre acceso sin autenticación (`SEC-01`), permisos insuficientes entre roles (`SEC-02`) y vaciado completo al cerrar sesión en equipos compartidos (`SEC-03`) quedan documentadas como **propuestas** en `docs/threat-model.md`, ya que la aplicación aún opera de forma local sin backend remoto ni sesiones.
+  2. **Guarda parcial en `Network First` del Service Worker:** Mientras que la rama `Cache First` en `public/sw.js` (líneas 98–104) comprueba `response.status === 200 && response.type === 'basic'`, la rama `Network First` (líneas 65–75) almacena en `pwa-dynamic-v1` cualquier respuesta devuelta por `fetch` sin verificar el código de estado. Se documentó el riesgo (`T-04` / `CTL-12`) sin modificar `public/sw.js` para respetar el alcance individual documental.
+  3. **Dependencia de los demás entregables de la Semana 09:** El check público de la Semana 09 exige además `docs/privacy-data-inventory.md`, `src/lib/security/`, `tests/security.spec.ts` y `public/robots.txt`, los cuales corresponden a las tareas de los otros integrantes del equipo y se validarán conjuntamente al integrar en `develop`.
+- **Cambio que puedo defender o modificar en vivo:**
+  - Puedo explicar y defender cada activo, actor, frontera de confianza y amenaza en `docs/threat-model.md`, demostrar en el código exactamente dónde operan los controles verificados (`validateLocalInspection`, `SyncQueue`, `registerServiceWorker`, `public/sw.js`, `camera.ts`, `geolocation.ts`, `notifications/client.ts`) y agregar o ajustar nuevas amenazas, controles o casos de prueba de seguridad en vivo.
+- **Uso declarado de IA (herramienta, propósito, validación):**
+  - Utilicé Antigravity (modelo Gemini) como asistente de apoyo para inspeccionar las rutas y módulos del repositorio, estructurar las tablas de activos, fronteras de confianza, amenazas y controles en `docs/threat-model.md` y dar formato a esta sección de evidencia. Validé personalmente que cada afirmación coincida con los archivos reales del proyecto y comprobé los resultados ejecutando `npm run typecheck`, `npm test` y `npm run verify`.
+
+# Evidencia individual · Semana 09
+## Nombre: Claudia Espíndola López
+
+### 1. Responsabilidad asignada
+
+**Área: Aseguramiento de calidad (QA), integración y validación de entregables.**
+
+Mi responsabilidad durante la Semana 09 consistió en verificar la calidad de la integración del trabajo del equipo, revisar el funcionamiento de las pruebas automatizadas y E2E, fortalecer el proceso de verificación técnica y documentar los resultados y las limitaciones del proyecto.
+
+El trabajo de QA se relacionó con los entregables de seguridad y privacidad desarrollados por los demás integrantes:
+
+- **Félix:** modelo de amenazas, identificación de riesgos y controles de seguridad.
+- **César:** inventario de privacidad, clasificación de datos y directivas de rastreo mediante `robots.txt`.
+- **Claudia:** validación de calidad, integración de pruebas, verificación de funcionamiento y documentación de evidencia.
+
+No se atribuyen a esta contribución las implementaciones asignadas a los otros integrantes.
+
+### 2. Archivos trabajados
+
+- `package.json`: organización y corrección de scripts de pruebas.
+- `scripts/verify.mjs`: verificación técnica por etapas y generación de reportes.
+- `tests/e2e/security.spec.ts`: prueba E2E de la respuesta HTTP de `robots.txt`.
+- `playwright.config.ts`: aislamiento de resultados de Playwright.
+- `docs/test-strategy.md`: estrategia, alcance, resultados y limitaciones de pruebas.
+- `evidence/individual.md`: registro de las actividades y resultados individuales.
+
+### 3. Actividades realizadas
+
+**3.1. Integración y organización de pruebas**
+
+Revisé la configuración de pruebas del proyecto y corregí duplicidades en los scripts de `package.json`. Organicé la ejecución de las pruebas de regresión, unitarias y de integración para que las suites correspondientes se incluyeran en los comandos oficiales.
+
+Configuré `test:integration` y `test:coverage` para incorporar las dos suites de integración, conservando la generación de reportes LCOV y JUnit.
+
+**3.2. Verificación técnica**
+
+Ajusté `scripts/verify.mjs` para ejecutar y registrar las etapas de:
+
+1. Verificación de estructura.
+2. Comprobación de tipos.
+3. Pruebas automatizadas y cobertura.
+4. Pruebas E2E.
+5. Compilación de producción.
+
+También incorporé el registro explícito de etapas omitidas y la generación de `reports/verification.json`. El proceso devuelve un código de error cuando alguna etapa falla, evitando presentar una verificación incompleta como aprobada.
+
+**3.3. Validación E2E de seguridad**
+
+Agregué `tests/e2e/security.spec.ts` para comprobar que el recurso `robots.txt` se entregue correctamente mediante HTTP.
+
+La prueba verifica:
+
+- Código de respuesta HTTP 200.
+- Tipo de contenido `text/plain`.
+- Directiva `User-agent: *`.
+- Directiva `Disallow: /`.
+
+Esta comprobación valida el recurso y sus directivas de rastreo, pero no representa una prueba de control de acceso ni sustituye los controles de seguridad del modelo de amenazas.
+
+**3.4. Conservación de reportes y documentación**
+
+Ajusté `playwright.config.ts` para separar los resultados transitorios de Playwright y evitar que se sobrescriban otros reportes.
+
+Actualicé `docs/test-strategy.md` para documentar el alcance de las pruebas, los resultados, los hallazgos de seguridad y las limitaciones identificadas durante la revisión.
+
+Finalmente, integré esta información en la evidencia individual de Semana 09.
+
+### 4. Pruebas ejecutadas y resultados obtenidos
+
+| Comando | Resultado |
+|---|---|
+| `npm run typecheck` | Aprobado, sin errores de tipos. |
+| `npm run test:unit` | Aprobado; validación e idempotencia. |
+| `npm run test:integration` | 18 de 18 subpruebas aprobadas en las dos suites de integración. |
+| `npm run test:coverage` | 30 de 30 pruebas aprobadas; generación de LCOV y JUnit. |
+| `npm run test:e2e` | 2 de 2 pruebas aprobadas, incluida la comprobación de `robots.txt`. |
+| `npm run build` | Compilación de producción aprobada. Se presentó una advertencia sobre la futura deprecación del soporte de React 18 en Next.js 16, sin impedir la compilación. |
+| `npm run verify` | Verificación técnica aprobada: estructura, tipos, pruebas automatizadas, E2E y compilación. La revisión académica permaneció en estado `pending`. |
+
+La ejecución de `npm run test:coverage` reportó:
+
+- Cobertura de líneas: **84.31 %**.
+- Cobertura de ramas: **84.84 %**.
+- Cobertura de funciones: **77.73 %**.
+
+Los porcentajes corresponden a los archivos instrumentados por Node.js y no incluyen la cobertura de los flujos E2E.
+
+### 5. Reportes, hallazgos y limitaciones
+
+Durante la validación se generaron:
+
+- `coverage/lcov.info`
+- `test-results/junit.xml`
+- `reports/verification.json`
+
+Se identificó un test legado en `tests/manifest.spec.mjs` que no está incluido en los scripts configurados y falla porque espera una propiedad `id` que no existe en el manifest. No se modificó ese archivo ni el manifest. El hallazgo quedó documentado en la estrategia de pruebas. La suite activa `tests/manifest.spec.ts` sí aprobó.
+
+En la revisión de seguridad se documentaron las siguientes limitaciones:
+
+- `robots.txt` contiene `Disallow: /`, pero esta directiva no constituye un mecanismo de control de acceso.
+- `next.config.mjs` no configura CSP, `X-Content-Type-Options`, `X-Frame-Options` o `frame-ancestors`, `Referrer-Policy` ni `Permissions-Policy`.
+- La estrategia Network First del Service Worker no impide almacenar respuestas HTTP 500 ni excluye expresamente respuestas con `Cache-Control: no-store` de la caché dinámica.
+- La sincronización continúa utilizando un handler simulado y no se comprobó una comunicación con un servidor remoto real.
+- El workflow de integración continua (CI) no se ejecutó durante esta validación local.
+
+Estos puntos se registraron como limitaciones y riesgos pendientes. No se presentaron como controles implementados ni como pruebas aprobadas.
+
+### 6. Herramientas utilizadas
+
+Se utilizó ChatGPT y Codex como herramientas de apoyo para inspeccionar la configuración del proyecto, analizar resultados de pruebas, identificar inconsistencias en los reportes y apoyar la elaboración de scripts y documentación.
+La ejecución de comandos, revisión de cambios y validación de resultados se realizaron en el entorno local mediante PowerShell, Node.js, npm y las herramientas de pruebas del proyecto. Los resultados documentados corresponden a las ejecuciones observadas.
+
+### 7. Estado de la contribución
+
+La verificación técnica local de la rama `feature/semana-09-claudia-qa` finalizó con resultado `pass`.
+
+Se completó la organización de pruebas, la validación E2E incorporada, la documentación de QA y la generación de reportes técnicos.

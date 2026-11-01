@@ -12,6 +12,7 @@ export default defineConfig({
         ["html", { outputFolder: "playwright-report", open: "never" }]
       ]
     : "list",
+  outputDir: "test-results/e2e-results",
   use: {
     baseURL: "http://127.0.0.1:3000",
     trace: "retain-on-failure",
