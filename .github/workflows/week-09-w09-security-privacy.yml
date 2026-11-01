@@ -1,0 +1,63 @@
+name: Week 09 - Security and Privacy
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.6"
+          cache: npm
+
+      - name: AC-01 - Clean reproducible installation
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: AC-02 - Security policy and artifact checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f src/lib/security/headers.mjs
+          test -f src/lib/security/headers.d.mts
+          test -f tests/security.spec.ts
+          test -f docs/privacy-data-inventory.md
+          test -f docs/threat-model.md
+          test -f public/robots.txt
+          npm run test:security
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: AC-03 - Verify security headers and robots over HTTP
+        run: npx playwright test tests/e2e/security.spec.ts
+
+      - name: AC-04 - Run regression tests and production build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run test:coverage
+          npm run build
+
+      - name: Upload security verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: week-09-security-privacy-reports
+          if-no-files-found: warn
+          path: |
+            coverage/
+            test-results/
+            playwright-report/
