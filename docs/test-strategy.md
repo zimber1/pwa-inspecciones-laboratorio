@@ -13,20 +13,21 @@ son sintéticos; no deben incluir datos personales, credenciales ni secretos.
   `tests/capabilities.spec.ts` y `tests/device-capabilities.spec.ts`.
 - **Unitarias:** `tests/unit/validation.spec.ts` y
   `tests/unit/idempotency.spec.ts`; verifican reglas aisladas de validación e
-  idempotencia.
+  idempotencia. `tests/security.spec.ts` comprueba la política CSP, las
+  cabeceras HTTP configuradas y las directivas de `robots.txt`.
 - **Integración:** `tests/integration/queue.spec.ts` y
   `tests/integration/inspections.spec.ts`; ejercitan la cola, la creación de
   inspecciones, el almacenamiento local, la recuperación, conectividad y
   fallos usando almacenamiento y un handler simulado.
 - **E2E:** Playwright comprueba la creación y persistencia local de una
-  inspección sintética (`tests/e2e/inspections.spec.ts`) y que el servidor
-  entregue la política presente en `public/robots.txt`
+  inspección sintética (`tests/e2e/inspections.spec.ts`) y las cabeceras HTTP
+  de seguridad y directivas del `robots.txt`
   (`tests/e2e/security.spec.ts`).
-- **Seguridad:** solo se valida automáticamente la respuesta HTTP de
-  `robots.txt` y sus directivas actuales. Las pruebas existentes del Service
-  Worker comprueban, entre otros comportamientos, el filtrado de respuestas
-  en la estrategia Cache First y el fallback offline; no cubren todos los
-  controles de seguridad descritos a continuación.
+- **Seguridad:** `tests/security.spec.ts` valida la configuración declarada;
+  Playwright verifica las cabeceras efectivamente servidas. Estas pruebas
+  cubren CSP, MIME sniffing, clickjacking, referrer, permisos del navegador y
+  rastreo, pero no sustituyen una auditoría de despliegue, autenticación ni
+  análisis de secretos.
 
 ## Comandos
 
@@ -35,6 +36,7 @@ Requisitos: Node.js `>=20.19.0` y npm `>=10.0.0`.
 ```powershell
 npm ci
 npm run typecheck
+npm run test:security
 npm run test:unit
 npm run test:integration
 npm run test:coverage
@@ -47,7 +49,7 @@ npm run verify
 `npm test` ejecuta la regresión, las pruebas unitarias y las dos suites de
 integración. `npm run test:integration` ejecuta ambas suites de integración;
 `npm run test:e2e` ejecuta todas las pruebas de `tests/e2e/`. Para probar solo
-la política HTTP de robots con Playwright:
+las cabeceras de seguridad y el recurso `robots.txt` con Playwright:
 
 ```powershell
 npx playwright test tests/e2e/security.spec.ts
@@ -92,11 +94,17 @@ asigna una calificación ni acredita por sí sola la calidad del producto.
   solicita a los rastreadores que no recorran ninguna ruta; no es un control de
   acceso ni protege información frente a clientes o rastreadores que ignoren
   la directiva.
-- `next.config.mjs` no configura `Content-Security-Policy`,
-  `X-Content-Type-Options`, `X-Frame-Options`/`frame-ancestors`,
-  `Referrer-Policy` ni `Permissions-Policy`. No se reportan estas cabeceras
-  como verificadas. No se introduce una CSP en esta contribución porque no hay
-  una política validada frente a los scripts y recursos actuales.
+- `src/lib/security/headers.mjs` define la política CSP y las cabeceras que
+  `next.config.mjs` entrega en todas las rutas. CSP limita los orígenes a
+  `'self'` y a `data:`/`blob:` donde se requieren; bloquea objetos y framing.
+  `unsafe-eval` se habilita solo en desarrollo según lo requiere React para
+  diagnóstico; no se habilita en producción. Se conserva `unsafe-inline` para
+  scripts y estilos por compatibilidad con el renderizado
+  estático/hidratación de Next;
+  una CSP con nonce exigiría renderizado dinámico. `Permissions-Policy`
+  conserva cámara y geolocalización para el uso previsto por la PWA y bloquea
+  micrófono, pagos y USB. No se configura HSTS porque HTTPS del despliegue no
+  se ha verificado.
 - En `public/sw.js`, la estrategia Network First almacena respuestas de red
   sin comprobar su estado HTTP; una respuesta 500 puede entrar en la caché
   dinámica. Las ramas de caché no excluyen respuestas con
@@ -113,3 +121,7 @@ asigna una calificación ni acredita por sí sola la calidad del producto.
   `tests/manifest.spec.ts`; no se cambió la funcionalidad ni el test legado.
 - E2E requiere un navegador compatible instalado. La ejecución local no
   certifica el estado de GitHub Actions ni la ausencia de secretos.
+- El workflow de Semana 09 verifica instalación, artefactos, seguridad HTTP,
+  pruebas automatizadas y build, pero los criterios AC-01 a AC-04 del kit
+  oficial no están presentes en este repositorio; su correspondencia exacta
+  requiere contrastar el kit.
