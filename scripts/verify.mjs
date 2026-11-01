@@ -32,6 +32,7 @@ const requiredFiles = [
   "tests/integration/queue.spec.ts",
   "tests/integration/inspections.spec.ts",
   "tests/e2e/inspections.spec.ts",
+  "tests/e2e/security.spec.ts",
   "playwright.config.ts",
   ".github/workflows/academic-evaluation.yml",
   "evidence/individual.md",
@@ -102,14 +103,27 @@ function runCheck(id, args) {
   return status === "pass";
 }
 
+const stages = [
+  ["typecheck", ["run", "typecheck"]],
+  ["automated-tests", ["run", "test:coverage"]],
+  ["e2e", ["run", "test:e2e"]],
+  ["build", ["run", "build"]],
+];
+
 if (structureCheck.status === "pass") {
-  runCheck("typecheck", ["run", "typecheck"]);
-  runCheck("unit-regression-and-integration", ["run", "test:coverage"]);
-  runCheck("e2e", ["run", "test:e2e"]);
-  runCheck("build", ["run", "build"]);
+  for (const [id, args] of stages) {
+    runCheck(id, args);
+  }
 } else {
   console.error(
     "\nFaltan artefactos obligatorios. Se omiten las pruebas para evitar una validacion incompleta.",
+  );
+  checks.push(
+    ...stages.map(([id]) => ({
+      id,
+      status: "skipped",
+      reason: "La comprobacion de estructura fallo.",
+    })),
   );
 }
 
