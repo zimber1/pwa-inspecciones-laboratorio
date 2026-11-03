@@ -1154,3 +1154,44 @@ La verificación técnica local de la rama `feature/semana-09-claudia-qa` finali
 
 Se completó la organización de pruebas, la validación E2E incorporada, la documentación de QA y la generación de reportes técnicos.
 - **SHA final del commit de implementación de Semana 09:** `095b473e8c0293c60b4adf8a8ddcc71d3ba46f62`
+
+
+# Evidencia individual · Semana 10
+
+## Felix — Semana 10: Infraestructura y proceso de Release
+
+- **Estudiante:** Felix Ivan Garcia Flores (`3523110172`)
+- **Grupo y equipo:** `10B` (`9B-E05`)
+- **Rama de trabajo:** `feature/semana-10-felix-release`
+- **Commit SHA evaluado:**
+  - Commit de configuracion standalone (`next.config.mjs`): `3ecda3f`
+  - Commit del endpoint de salud (`src/app/api/health/route.ts`): `713ddd6`
+  - Commit de infraestructura Docker (`Dockerfile` y `.dockerignore`): `5ec7980`
+  - Commit de documentacion de release (`docs/release-process.md`): `73e010e` (`73e010e6039c143921fcae65f318b52f0c6fbbea`)
+  - El SHA final de la rama tras registrar esta evidencia se obtiene mediante `git rev-parse HEAD` y se adjunta en la entrega y en el Pull Request hacia `develop`.
+- **Pull Request:** Hacia `develop` desde `feature/semana-10-felix-release`.
+- **Enlaces a mis cambios:**
+  - Definicion multi-stage de produccion: [Dockerfile](../Dockerfile) y [.dockerignore](../.dockerignore)
+  - Configuracion de Next.js para produccion: [next.config.mjs](../next.config.mjs)
+  - Endpoint de salud e identificacion de version/SHA: [src/app/api/health/route.ts](../src/app/api/health/route.ts)
+  - Documentacion del proceso de release: [docs/release-process.md](../docs/release-process.md)
+  - Registro de evidencia individual: [evidence/individual.md](./individual.md)
+- **Decision tecnica que puedo explicar:**
+  1. **Construccion Docker multi-stage con `output: "standalone"` y usuario no root (`nextjs`, UID `1001`):** Configure `next.config.mjs` con `output: "standalone"`, `poweredByHeader: false` y `compress: true`, y dividi el `Dockerfile` en tres etapas (`deps`, `builder` y `runner`) basadas en `node:20.19.6-alpine`. En la etapa `runner` se copian unicamente `.next/standalone`, `.next/static` y `public/` con `--chown=nextjs:nodejs` y se ejecuta bajo el usuario sin privilegios `nextjs` (`UID 1001`, `GID 1001`). Esta decision reduce la superficie de ataque y evita incluir el arbol completo de `node_modules` de desarrollo en la imagen final.
+  2. **Endpoint `/api/health` dinamico y `HEALTHCHECK` nativo sin binarios adicionales:** Implemente `GET /api/health` y `HEAD /api/health` en `src/app/api/health/route.ts` con `export const dynamic = "force-dynamic"` y `Cache-Control: no-store, no-cache, must-revalidate` para que el estado de salud, la version (`APP_VERSION`) y el commit (`COMMIT_SHA`) reflejen siempre la ejecucion real del contenedor sin respuestas cacheadas. Asimismo, el `HEALTHCHECK` del `Dockerfile` utiliza `node -e "fetch(...)"` nativo de Node.js 20 en lugar de instalar utilidades externas como `curl` o `wget` en Alpine.
+- **Pruebas ejecutadas y resultados reales observados:**
+  - `npm run verify`: codigo de salida `0` (`Verificacion tecnica: pass. Reporte: reports/verification.json`). Ejecuto comprobacion de estructura (`pass`), `npm run typecheck` (`0` errores), `npm run test:coverage` (`33/33` pruebas en `PASS`, cobertura de lineas `95.03%`, ramas `85.89%`, funciones `85.68%`), `npm run test:e2e` (`3 passed (7.6s)` en Playwright) y `npm run build` con Next.js `16.4.3 (Turbopack)` (`Compiled successfully`, ruta dinamica `/api/health` generada).
+  - `bash public-tests/check.sh`: codigo de salida `0` (`PUBLIC_OK`).
+  - Construccion y verificacion del contenedor Docker en vivo:
+    - `docker build --build-arg APP_VERSION=0.1.0 --build-arg COMMIT_SHA=73e010e -t pwa-inspecciones:0.1.0 -t pwa-inspecciones:73e010e .` -> codigo de salida `0` (imagen `286MB`).
+    - `docker run -d --name pwa-release-check -p 3000:3000 pwa-inspecciones:73e010e` -> contenedor en ejecucion.
+    - `docker exec pwa-release-check id` -> `uid=1001(nextjs) gid=1001(nodejs) groups=1001(nodejs)`.
+    - `Invoke-WebRequest -UseBasicParsing http://127.0.0.1:3000/api/health` -> HTTP `200 OK` con cuerpo `{"status":"ok","healthy":true,"service":"pwa-inspecciones-laboratorio","version":"0.1.0","commitSha":"73e010e","sha":"73e010e","commit":"73e010e","environment":"production","timestamp":"2026-11-03T23:22:45.503Z","uptime":11}`.
+    - `docker inspect --format "User={{.Config.User}} Health={{.State.Health.Status}} Labels={{json .Config.Labels}}" pwa-release-check` -> `User=nextjs Health=healthy`.
+- **Limitaciones y riesgos diagnosticados:**
+  1. **Diferencia de directiva CSP `'unsafe-eval'` entre `development` y `production`:** Durante las pruebas se observo que `src/lib/security/headers.mjs` incluye `'unsafe-eval'` solo cuando `isDevelopment` es `true` (`NODE_ENV !== "production"`). Por ello, `tests/e2e/security.spec.ts` aprueba al ejecutarse mediante `npm run test:e2e` / `npm run verify` (que levanta `npm run dev`), mientras que el contenedor de produccion (`NODE_ENV=production`) sirve una politica CSP mas estricta sin `'unsafe-eval'`.
+  2. **Dependencia de los entregables de los demas integrantes en `develop`:** La validacion completa del paquete de Semana 10 (`AC-02` integral) requiere ademas `docs/runbook.md`, `tests/smoke.spec.ts` y la actualizacion del workflow de evaluacion, los cuales corresponden a las partes asignadas a los otros integrantes del equipo.
+- **Cambio que puedo defender o modificar en vivo:**
+  - Puedo explicar y modificar en vivo cada etapa del `Dockerfile` (`deps`, `builder`, `runner`), la configuracion `output: "standalone"` en `next.config.mjs`, la resolucion de `APP_VERSION` y `COMMIT_SHA` en `src/app/api/health/route.ts` y la directiva `HEALTHCHECK` del contenedor.
+- **Uso declarado de IA (herramienta, proposito, validacion):**
+  - Utilice Antigravity (modelo Gemini) como asistente de apoyo para estructurar el `Dockerfile` multi-stage, el endpoint `src/app/api/health/route.ts`, la documentacion en `docs/release-process.md` y esta seccion de evidencia individual. Valide personalmente los cambios construyendo y ejecutando el contenedor en Docker Desktop, verificando el usuario `nextjs`, el estado `healthy`, la respuesta de `/api/health` y la suite completa `npm run verify`.
